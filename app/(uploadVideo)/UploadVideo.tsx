@@ -10,9 +10,9 @@ import { VStack } from '@/components/ui/vstack';
 import { Text } from '@/components/ui/text';
 import { Image } from '@/components/ui/image';
 
-const UploadVideo = () => {
+const UploadVideo = ({ onFinishUpload }) => {
   const { pickVideo, video, uploading, width, height, handleUpload } =
-    useUploadVideo();
+    useUploadVideo(onFinishUpload);
   const dots = Array(50)
     .fill(0)
     .map((_, i) => (

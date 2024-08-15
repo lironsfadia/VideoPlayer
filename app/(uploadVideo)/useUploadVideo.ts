@@ -14,7 +14,7 @@ interface Video {
   uri: string;
 }
 
-const useUploadVideo = () => {
+const useUploadVideo = (onFinishUpload) => {
   const [video, setVideo] = useState<Video | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -30,10 +30,12 @@ const useUploadVideo = () => {
 
     try {
       // Define the destination path
-      const destPath = `${RNFS.DocumentDirectoryPath}/${video.name}`;
+      const destPath = `${RNFS.DocumentDirectoryPath}/${video.name}${Date.now()}`;
 
       // Copy the file to the new location
       await RNFS.copyFile(video.uri, destPath);
+
+      onFinishUpload({ uri: destPath });
 
       console.log('Video saved successfully at:', destPath);
 

@@ -15,7 +15,7 @@ export default function HomeScreen() {
     videoSource,
     textOverlays,
     videoDuration,
-    handleFileSelect,
+    handleFinishUpload,
     handleAddTextOverlay,
     handleSetVideoDuration,
   } = useVideoState();
@@ -33,12 +33,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      {!videoSource && <UploadVideo onFileSelect={handleFileSelect} />}
+      {!videoSource && <UploadVideo onFinishUpload={handleFinishUpload} />}
       {videoSource && (
         <>
-          <VideoPlayer 
-            source={videoSource} 
-            textOverlays={textOverlays} 
+          <VideoPlayer
+            source={videoSource}
+            textOverlays={textOverlays}
             onLoad={handleSetVideoDuration}
           />
           <Timeline duration={videoDuration} onScrub={handleScrub} />

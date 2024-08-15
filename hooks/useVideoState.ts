@@ -8,12 +8,16 @@ export function useVideoState() {
   const [trimEnd, setTrimEnd] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
 
-  const handleFileSelect = (file: { uri: string }) => {
+  const handleFinishUpload = (file: { uri: string }) => {
     setVideoSource({ uri: file.uri });
   };
 
   const handleAddTextOverlay = () => {
-    const newOverlay: TextOverlay = { id: Date.now(), text: 'New Overlay', position: { x: 0, y: 0 } };
+    const newOverlay: TextOverlay = {
+      id: Date.now(),
+      text: 'New Overlay',
+      position: { x: 0, y: 0 },
+    };
     setTextOverlays([...textOverlays, newOverlay]);
   };
 
@@ -27,7 +31,7 @@ export function useVideoState() {
     trimStart,
     trimEnd,
     videoDuration,
-    handleFileSelect,
+    handleFinishUpload,
     handleAddTextOverlay,
     handleSetVideoDuration,
     setTrimStart,
