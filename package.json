@@ -44,6 +44,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-create-thumbnail": "^2.0.0",
     "react-native-css-interop": "^0.0.34",
     "react-native-document-picker": "^9.3.0",
     "react-native-fs": "^2.20.0",
@@ -54,6 +55,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "^15.5.0",
     "react-native-video": "^6.4.3",
+    "react-native-video-processing": "^1.7.2",
     "react-native-web": "~0.19.10",
     "react-native-wgpu": "^0.1.2",
     "wgpu-matrix": "^3.0.2"

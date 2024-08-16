@@ -11,26 +11,58 @@ import { Text } from '@/components/ui/text';
 import Timeline from './Timeline';
 import ActionButton from './ui/ActionButton';
 import { useVideoActions } from '@/hooks/useVideoActions';
+import { createThumbnail } from 'react-native-create-thumbnail';
+import { getScreenDimensions } from '@/core/utils';
+import TextOverlay from './TextOverlay';
+import AddTextOverlay from './AddTextOverlay';
+import TrimInputModal from './TrimInputModal';
 
-const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
+type TextOverlay = {
+  id: number;
+  text: string;
+  time: number;
+  position: { x: number; y: number };
+};
+
+const VideoPlayer = ({ source }) => {
   const videoRef = useRef<VideoRef>(null);
   const { handleScrub, handleTrim, handleSave } = useVideoActions();
+  const { width, height } = getScreenDimensions();
+  const [isTrimModalVisible, setIsTrimModalVisible] = useState(false);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [thumbnailUri, setThumbnailUri] = useState('');
+
   const [videoDimensions, setVideoDimensions] = useState({
     width: 0,
     height: 0,
   });
-  const [screenDimensions, setScreenDimensions] = useState(
-    Dimensions.get('window')
-  );
+  const [screenDimensions, setScreenDimensions] = useState({ width, height });
   const [duration, setDuration] = useState(0);
+  const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([]);
+  const [trimStart, setTrimStart] = useState(0);
+  const [trimEnd, setTrimEnd] = useState(0);
+  const [isAddingText, setIsAddingText] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      videoRef.current?.pause();
+    } else {
+      videoRef.current?.resume();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const onTrim = async (start: number, end: number) => {
+    await handleTrim(start, end, source, videoRef);
+  };
 
   useEffect(() => {
     console.log('VideoPlayer mounted');
     const updateDimensions = () => {
-      const { width, height } = Dimensions.get('window');
+      const { width, height } = getScreenDimensions();
       setScreenDimensions({ width, height });
     };
     Dimensions.addEventListener('change', updateDimensions);
@@ -57,7 +89,23 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
     setDuration(data.duration);
     setVideoLoaded(true);
     setVideoDimensions({ width: data.width, height: data.height });
+    generateThumbnail();
+    setIsPlaying(true);
   }
+
+  const generateThumbnail = async () => {
+    if (!source.uri) {
+      try {
+        const { path } = await createThumbnail({
+          url: source.uri,
+          timeStamp: 1000,
+        });
+        setThumbnailUri(path);
+      } catch (err) {
+        console.error('Error generating thumbnail:', err);
+      }
+    }
+  };
 
   const handleFrameUpdate = (time) => {
     if (videoRef.current) {
@@ -73,6 +121,49 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
     }
   };
 
+  const handleAddTextOverlay = () => {
+    videoRef.current?.pause();
+    setIsAddingText(true);
+  };
+
+  const handleAddNewText = (
+    text: string,
+    position: { x: number; y: number }
+  ) => {
+    const newOverlay: TextOverlay = {
+      id: Date.now(),
+      text,
+      position,
+      time: currentTime,
+    };
+    setTextOverlays([...textOverlays, newOverlay]);
+    setIsAddingText(false);
+    videoRef.current?.resume();
+  };
+
+  const handleCancelAddText = () => {
+    setIsAddingText(false);
+    videoRef.current?.resume();
+  };
+
+  const handleUpdateOverlay = (
+    id: number,
+    text: string,
+    position: { x: number; y: number }
+  ) => {
+    setTextOverlays((overlays) =>
+      overlays.map((overlay) =>
+        overlay.id === id ? { ...overlay, text, position } : overlay
+      )
+    );
+  };
+
+  const handleDeleteOverlay = (id: number) => {
+    setTextOverlays((overlays) =>
+      overlays.filter((overlay) => overlay.id !== id)
+    );
+  };
+
   const { width: screenWidth, height: screenHeight } = screenDimensions;
 
   return (
@@ -80,37 +171,41 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
       style={[styles.container, { width: screenWidth, height: screenHeight }]}
     >
       <View style={styles.videoContainer}>
-        <Video
-          ref={videoRef}
-          source={source}
-          style={styles.video}
-          onProgress={onProgress}
-          resizeMode="cover"
-          repeat
-          playInBackground={false}
-          onBuffer={onBuffer}
-          onError={onError}
-          onLoad={onLoad}
-        />
+        {source && (
+          <Video
+            ref={videoRef}
+            source={source}
+            style={styles.video}
+            onProgress={onProgress}
+            resizeMode="cover"
+            repeat
+            playInBackground={false}
+            onBuffer={onBuffer}
+            onError={onError}
+            onLoad={onLoad}
+          />
+        )}
         {!videoLoaded && (
           <Text style={styles.loadingText}>Loading video...</Text>
         )}
-        {textOverlays.map(
-          (overlay, index) =>
-            overlay.timestamp <= currentTime && (
-              <View
-                key={index}
-                style={[
-                  styles.overlay,
-                  {
-                    top: (overlay.y / 100) * screenHeight,
-                    left: (overlay.x / 100) * screenWidth,
-                  },
-                ]}
-              >
-                <Text style={styles.overlayText}>{overlay.text}</Text>
-              </View>
-            )
+        {textOverlays.map((overlay) => {
+          console.log(overlay.time.toFixed(2), currentTime.toFixed(2));
+          return currentTime.toFixed(2) === overlay.time.toFixed(2) ? (
+            <TextOverlay
+              key={overlay.id}
+              id={overlay.id}
+              initialText={overlay.text}
+              initialPosition={overlay.position}
+              onUpdate={handleUpdateOverlay}
+              onDelete={handleDeleteOverlay}
+            />
+          ) : null;
+        })}
+        {isAddingText && (
+          <AddTextOverlay
+            onAdd={handleAddNewText}
+            onCancel={handleCancelAddText}
+          />
         )}
       </View>
       <View style={styles.controlsContainer}>
@@ -120,12 +215,34 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
           onScrub={handleScrub}
           currentTime={currentTime}
           onFrameUpdate={handleFrameUpdate}
+          thumbnailUri={thumbnailUri}
+          isPlaying={isPlaying}
+          onPlayPause={handlePlayPause}
         />
         <View style={styles.buttonContainer}>
-          <ActionButton title="Add Text" handlePress={handleAddTextOverlay} />
-          <ActionButton title="Trim" handlePress={handleTrim} />
-          <ActionButton title="Upload" handlePress={handleSave} />
+          <ActionButton
+            title="Add Text"
+            handlePress={handleAddTextOverlay}
+            iconName={'text-format'}
+          />
+          <ActionButton
+            title="Trim"
+            handlePress={() => setIsTrimModalVisible(true)}
+            iconName={'content-cut'}
+          />
+          <ActionButton
+            title="Upload"
+            handlePress={handleSave}
+            iconName={'save'}
+          />
         </View>
+        {isTrimModalVisible && (
+          <TrimInputModal
+            onClose={() => setIsTrimModalVisible(false)}
+            onTrim={onTrim}
+            duration={duration}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -166,11 +283,12 @@ const styles = StyleSheet.create({
   controlsContainer: {
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1, // Ensure controls are above the video
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
+    marginTop: 20,
+    zIndex: 2, // Ensure buttons are above other controls
   },
 });
 

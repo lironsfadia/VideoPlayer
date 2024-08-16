@@ -36,13 +36,8 @@ export default function VideoPlayerPage() {
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen options={{ headerShown: false }} />
-
-      <CustomHeader title="Home" />
-      <VideoPlayer
-        source={{ uri: parsedVideoData.uri }}
-        textOverlays={parsedVideoData.textOverlays || []}
-        handleAddTextOverlay={() => {}}
-      />
+      <CustomHeader />
+      <VideoPlayer source={{ uri: parsedVideoData.uri }} />
     </View>
   );
 }
