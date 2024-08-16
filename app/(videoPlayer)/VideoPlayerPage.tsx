@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import Orientation from 'react-native-orientation-locker';
 import VideoPlayer from './VideoPlayer';
 import { Text } from '@/components/ui/text';
+import CustomHeader from '@/components/ui/CustomHeader';
 
 export default function VideoPlayerPage() {
   const { videoData } = useLocalSearchParams();
@@ -35,10 +36,12 @@ export default function VideoPlayerPage() {
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen options={{ headerShown: false }} />
+
+      <CustomHeader title="Home" />
       <VideoPlayer
         source={{ uri: parsedVideoData.uri }}
         textOverlays={parsedVideoData.textOverlays || []}
-        // Add any other props that your VideoPlayer component expects
+        handleAddTextOverlay={() => {}}
       />
     </View>
   );

@@ -1,14 +1,21 @@
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import useUploadVideo from './useUploadVideo';
-import AnimatedDots from './ui/AnimatedDots';
+import AnimatedDots from '../../components/ui/AnimatedDots';
 import { View } from 'react-native';
-import { Button, ButtonText } from '@/components/ui/button';
+import {
+  Button,
+  ButtonGroup,
+  ButtonIcon,
+  ButtonSpinner,
+  ButtonText,
+} from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
 import { Spinner } from '@/components/ui/spinner';
 import { VStack } from '@/components/ui/vstack';
 import { Text } from '@/components/ui/text';
 import { Image } from '@/components/ui/image';
+import { UPLOAD_BUTTON_TITLE } from './consts';
 
 const UploadVideo = ({ onFinishUpload }) => {
   const { pickVideo, video, uploading, width, height, handleUpload } =
@@ -27,16 +34,37 @@ const UploadVideo = ({ onFinishUpload }) => {
       {dots}
       <VStack className="w-4/5 items-center">
         <Text className="text-4xl font-bold text-fuchsia-500 mb-8">
-          Upload Your Rad Video
+          {UPLOAD_BUTTON_TITLE}{' '}
         </Text>
         {!video ? (
-          <Button
-            onPress={pickVideo}
-            className="bg-fuchsia-500 p-5 rounded-md border-3 border-fuchsia-200"
-          >
-            <MaterialIcons name="videocam" size={50} color="#ffffff" />
-            <ButtonText>Select Video</ButtonText>
-          </Button>
+          <ButtonGroup>
+            <Button
+              size="xl"
+              onPress={pickVideo}
+              bg="$fuchsia500"
+              borderColor="$fuchsia200"
+              borderWidth={3}
+              rounded="$md"
+              p="$5"
+            >
+              {uploading ? (
+                <ButtonSpinner color="$white" />
+              ) : (
+                <ButtonIcon
+                  as={MaterialIcons}
+                  name="videocam"
+                  size="2xl"
+                  mr="$2"
+                />
+              )}
+              <ButtonText
+                className="font-large text-lg ml-1 text-fuchsia-500"
+                color="$white"
+              >
+                Select Video
+              </ButtonText>
+            </Button>
+          </ButtonGroup>
         ) : (
           <VStack className="w-full mb-5">
             <Image
