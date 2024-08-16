@@ -8,7 +8,13 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-const Timeline = ({ duration, currentTime, onScrub, videoRef }) => {
+const Timeline = ({
+  duration,
+  currentTime,
+  onScrub,
+  videoRef,
+  onFrameUpdate,
+}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
   const timelineWidth = Dimensions.get('window').width - 70; // Adjust for padding
@@ -56,6 +62,8 @@ const Timeline = ({ duration, currentTime, onScrub, videoRef }) => {
             currentDuration,
           });
           onScrub({ videoRef: videoRef, time: isNaN(time) ? 0 : time });
+
+          onFrameUpdate(isNaN(time) ? 0 : time);
         } else {
           console.warn('Cannot scrub: duration is 0 or invalid');
         }

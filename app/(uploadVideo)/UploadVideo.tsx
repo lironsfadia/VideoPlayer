@@ -18,8 +18,15 @@ import { Image } from '@/components/ui/image';
 import { UPLOAD_BUTTON_TITLE } from './consts';
 
 const UploadVideo = ({ onFinishUpload }) => {
-  const { pickVideo, video, uploading, width, height, handleUpload } =
-    useUploadVideo(onFinishUpload);
+  const {
+    pickVideo,
+    video,
+    uploading,
+    width,
+    height,
+    handleUpload,
+    videoName,
+  } = useUploadVideo(onFinishUpload);
   const dots = Array(50)
     .fill(0)
     .map((_, i) => (
@@ -66,22 +73,34 @@ const UploadVideo = ({ onFinishUpload }) => {
             </Button>
           </ButtonGroup>
         ) : (
-          <VStack className="w-full mb-5">
-            <Image
-              source={{ uri: video }}
-              className="w-full aspect-video rounded-md overflow-hidden mb-5 border-5 border-fuchsia-500"
-              alt="Selected video thumbnail"
-              resizeMode="cover"
-            />
+          <ButtonGroup>
             <Button
+              size="xl"
               onPress={handleUpload}
-              className="bg-fuchsia-500 p-5 rounded-md border-3 border-fuchsia-200"
+              bg="$fuchsia500"
+              borderColor="$fuchsia200"
+              borderWidth={3}
+              rounded="$md"
+              p="$5"
             >
-              <ButtonText className="text-white text-2xl font-bold">
-                {uploading ? 'Uploading...' : 'Start Upload'}
+              {uploading ? (
+                <ButtonSpinner color="$white" />
+              ) : (
+                <ButtonIcon
+                  as={MaterialIcons}
+                  name="videocam"
+                  size="2xl"
+                  mr="$2"
+                />
+              )}
+              <ButtonText
+                className="font-large text-lg ml-1 text-fuchsia-500"
+                color="$white"
+              >
+                {uploading ? 'Uploading...' : `Start Upload: "${videoName}"`}
               </ButtonText>
             </Button>
-          </VStack>
+          </ButtonGroup>
         )}
         {uploading && (
           <HStack space="sm" className="items-center mt-3">

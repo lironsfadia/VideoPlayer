@@ -71,7 +71,15 @@ const useUploadVideo = (onFinishUpload) => {
     }
   };
 
-  return { handleUpload, pickVideo, video, uploading, width, height };
+  return {
+    handleUpload,
+    pickVideo,
+    video,
+    uploading,
+    width,
+    height,
+    videoName: video?.name,
+  };
 };
 
 export default useUploadVideo;

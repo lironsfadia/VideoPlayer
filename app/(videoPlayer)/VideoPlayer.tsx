@@ -59,6 +59,20 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
     setVideoDimensions({ width: data.width, height: data.height });
   }
 
+  const handleFrameUpdate = (time) => {
+    if (videoRef.current) {
+      videoRef.current.seek(time);
+
+      // Pause the video immediately after seeking
+      videoRef.current.pause();
+
+      // Resume playback after a short delay (e.g., 2 seconds)
+      setTimeout(() => {
+        videoRef.current?.resume();
+      }, 1000);
+    }
+  };
+
   const { width: screenWidth, height: screenHeight } = screenDimensions;
 
   return (
@@ -105,6 +119,7 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
           duration={duration}
           onScrub={handleScrub}
           currentTime={currentTime}
+          onFrameUpdate={handleFrameUpdate}
         />
         <View style={styles.buttonContainer}>
           <ActionButton title="Add Text" handlePress={handleAddTextOverlay} />
