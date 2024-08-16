@@ -13,8 +13,9 @@ import ActionButton from './ui/ActionButton';
 import { useVideoActions } from '@/hooks/useVideoActions';
 
 const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
-  const { handleScrub, handleTrim, handleSave } = useVideoActions();
   const videoRef = useRef<VideoRef>(null);
+  const { handleScrub, handleTrim, handleSave } = useVideoActions();
+
   const [currentTime, setCurrentTime] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoDimensions, setVideoDimensions] = useState({
@@ -24,6 +25,7 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
   const [screenDimensions, setScreenDimensions] = useState(
     Dimensions.get('window')
   );
+  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
     console.log('VideoPlayer mounted');
@@ -38,12 +40,11 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
   }, []);
 
   const onProgress = (data) => {
-    console.log('Video progress:', data);
     setCurrentTime(data.currentTime);
   };
 
   function onBuffer(e: Readonly<{ isBuffering: boolean }>): void {
-    console.log('Video buffering:', e.isBuffering);
+    //console.log('Video buffering:', e.isBuffering);
   }
 
   function onError(
@@ -53,7 +54,7 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
   }
 
   function onLoad(data) {
-    console.log('Video loaded:', data);
+    setDuration(data.duration);
     setVideoLoaded(true);
     setVideoDimensions({ width: data.width, height: data.height });
   }
@@ -78,7 +79,7 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
           onLoad={onLoad}
         />
         {!videoLoaded && (
-          <RNText style={styles.loadingText}>Loading video...</RNText>
+          <Text style={styles.loadingText}>Loading video...</Text>
         )}
         {textOverlays.map(
           (overlay, index) =>
@@ -99,7 +100,12 @@ const VideoPlayer = ({ source, textOverlays, handleAddTextOverlay }) => {
         )}
       </View>
       <View style={styles.controlsContainer}>
-        <Timeline duration={source.duration} onScrub={handleScrub} />
+        <Timeline
+          videoRef={videoRef}
+          duration={duration}
+          onScrub={handleScrub}
+          currentTime={currentTime}
+        />
         <View style={styles.buttonContainer}>
           <ActionButton title="Add Text" handlePress={handleAddTextOverlay} />
           <ActionButton title="Trim" handlePress={handleTrim} />
