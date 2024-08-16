@@ -30,7 +30,7 @@ const useUploadVideo = (onFinishUpload) => {
 
     try {
       // Define the destination path
-      const destPath = `${RNFS.DocumentDirectoryPath}/${video.name}${Date.now()}`;
+      const destPath = `${RNFS.DocumentDirectoryPath}/${Date.now()}-${video.name}`;
 
       // Copy the file to the new location
       await RNFS.copyFile(video.uri, destPath);

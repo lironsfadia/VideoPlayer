@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -17,6 +17,10 @@ const WordSlotMachine = () => {
   const scrollY = useSharedValue(0);
   const isSpinning = useRef(false);
 
+  useEffect(() => {
+    spin();
+  }, []);
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: scrollY.value % (words.length * ITEM_HEIGHT) }],
@@ -28,7 +32,7 @@ const WordSlotMachine = () => {
 
     isSpinning.current = true;
     const duration = 2000;
-    const spins = 2;
+    const spins = 20;
 
     scrollY.value = withRepeat(
       withTiming(-(words.length * ITEM_HEIGHT * spins), { duration }),
@@ -62,10 +66,6 @@ const WordSlotMachine = () => {
           ))}
         </Animated.View>
       </View>
-      <Text style={styles.currentWord}>Current Word: {currentWord}</Text>
-      <TouchableOpacity style={styles.button} onPress={spin}>
-        <Text style={styles.buttonText}>Spin</Text>
-      </TouchableOpacity>
     </View>
   );
 };
