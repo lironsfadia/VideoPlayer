@@ -11,7 +11,7 @@ import {
 const Timeline = ({ duration, currentTime, onScrub, videoRef }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
-  const timelineWidth = Dimensions.get('window').width - 20; // Adjust for padding
+  const timelineWidth = Dimensions.get('window').width - 70; // Adjust for padding
 
   // Use a ref to store the latest duration value
   const durationRef = useRef(duration);
@@ -94,24 +94,26 @@ const Timeline = ({ duration, currentTime, onScrub, videoRef }) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    flex: 1,
+    right: 10,
   },
   timeline: {
-    height: 20,
+    height: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 10,
+    borderRadius: 5,
   },
   scrubber: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
     backgroundColor: 'white',
     position: 'absolute',
-    top: 0,
+    top: -2.5,
   },
   debugText: {
     color: 'white',
-    marginTop: 5,
+    marginTop: 3,
+    fontSize: 10,
   },
 });
 
