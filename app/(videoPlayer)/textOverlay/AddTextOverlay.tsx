@@ -39,7 +39,7 @@ const AddTextOverlay = ({ onAdd, onCancel }: AddTextOverlayProps) => {
 
   const handleAdd = () => {
     if (text.trim()) {
-      onAdd(text, { x: width / 2 - 75, y: height / 2 - 20 });
+      onAdd(text, { x: 50, y: 50 });
     } else {
       onCancel();
     }

@@ -34,3 +34,17 @@ export interface ControlPanelProps {
   onTrimPress: () => void;
   onSavePress: () => void;
 }
+
+export interface OverlayManagerProps {
+  textOverlays: any[];
+  currentTime: number;
+  isAddingText: boolean;
+  onAddNewText: () => void;
+  onCancelAddText: () => void;
+  onUpdateOverlay: (
+    id: number,
+    text: string,
+    position: { x: number; y: number }
+  ) => void;
+  onDeleteOverlay: (id: number) => void;
+}

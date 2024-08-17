@@ -5,6 +5,7 @@ import styles from './styles';
 import { ControlPanelProps } from './types';
 import Timeline from '../timeline/Timeline';
 import ActionButton from '../ui/ActionButton';
+import OverlayTimeline from '../textOverlay/OverlayTimeline';
 
 const ControlPanel = ({
   videoRef,
@@ -18,8 +19,11 @@ const ControlPanel = ({
   onAddTextOverlay,
   onTrimPress,
   onSavePress,
+  textOverlays,
 }: ControlPanelProps) => (
   <View style={styles.controlsContainer}>
+    <OverlayTimeline duration={duration} textOverlays={textOverlays} />
+
     <Timeline
       videoRef={videoRef}
       duration={duration}

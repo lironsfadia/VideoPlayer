@@ -10,6 +10,7 @@ import Thumbnail from '../thumbnail/Thumbnail';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TimelineProps } from './types';
 import { useTimeline } from './useTimeline';
+import { PLAY_BUTTON_SIZE, SCRUBBER_SIZE } from './constants';
 
 const Timeline = ({
   duration,
@@ -28,6 +29,7 @@ const Timeline = ({
     glowAnim,
     formatTime,
     durationRef,
+    isDragging,
   } = useTimeline({
     duration,
     currentTime,
@@ -39,8 +41,6 @@ const Timeline = ({
   const glowStyle = {
     shadowOpacity: glowAnim,
   };
-
-  console.log({ thumbnailUri });
 
   return (
     <View style={styles.container}>
@@ -67,12 +67,14 @@ const Timeline = ({
           </View>
         </View>
       </View>
-      <Thumbnail
-        uri={thumbnailUri}
-        time={(safePosition / timelineWidth) * durationRef.current}
-        position={safePosition + 50}
-        width={100}
-      />
+      {!isPlaying && thumbnailUri && (
+        <Thumbnail
+          uri={thumbnailUri}
+          time={(safePosition / timelineWidth) * durationRef.current}
+          position={Math.min(safePosition, timelineWidth - 100)}
+          width={100}
+        />
+      )}
     </View>
   );
 };
@@ -87,8 +89,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   playButton: {
-    width: 40,
-    height: 40,
+    width: PLAY_BUTTON_SIZE,
+    height: PLAY_BUTTON_SIZE,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000080',
@@ -110,8 +112,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   scrubber: {
-    width: 20,
-    height: 20,
+    width: SCRUBBER_SIZE,
+    height: SCRUBBER_SIZE,
     borderRadius: 10,
     backgroundColor: '#00FFFF',
     position: 'absolute',

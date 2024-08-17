@@ -2,7 +2,7 @@ import React from 'react';
 import { View, SafeAreaView } from 'react-native';
 import useVideoPlayer from './useVideoPlayer';
 import VideoComponent from './VideoComponent';
-import OverlayManager from './OverlayManager';
+import OverlayManager from '../textOverlay/OverlayManager';
 import ControlPanel from './ControlPanel';
 import { Text } from '@/components/ui/text';
 import styles from './styles';
@@ -59,6 +59,7 @@ const VideoPlayer = ({ source }) => {
             onCancelAddText={handleCancelAddText}
             onUpdateOverlay={handleUpdateOverlay}
             onDeleteOverlay={handleDeleteOverlay}
+            duration={duration}
           />
         </View>
         <View style={styles.controlsContainer}>
@@ -74,6 +75,7 @@ const VideoPlayer = ({ source }) => {
             onAddTextOverlay={handleAddTextOverlay}
             onTrimPress={() => setIsTrimModalVisible(true)}
             onSavePress={handleSave}
+            textOverlays={textOverlays}
           />
         </View>
       </View>

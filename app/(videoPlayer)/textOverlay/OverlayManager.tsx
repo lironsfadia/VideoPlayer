@@ -1,6 +1,7 @@
 import React from 'react';
-import AddTextOverlay from '../textOverlay/AddTextOverlay';
-import TextOverlay from '../textOverlay/TextOverlay';
+import AddTextOverlay from './AddTextOverlay';
+import TextOverlay from './TextOverlay';
+import { OverlayManagerProps } from '../videoPlayer/types';
 
 const OverlayManager = ({
   textOverlays,
@@ -10,10 +11,12 @@ const OverlayManager = ({
   onCancelAddText,
   onUpdateOverlay,
   onDeleteOverlay,
-}) => (
+}: OverlayManagerProps) => (
   <>
-    {textOverlays.map((overlay) =>
-      currentTime.toFixed(2) < overlay.time.toFixed(2) + 0.1 ? (
+    {textOverlays.map((overlay) => {
+      const diff =
+        Number(currentTime.toFixed(2)) - Number(overlay.time.toFixed(2));
+      return diff > 0 && diff < 0.5 ? (
         <TextOverlay
           key={overlay.id}
           id={overlay.id}
@@ -22,8 +25,8 @@ const OverlayManager = ({
           onUpdate={onUpdateOverlay}
           onDelete={onDeleteOverlay}
         />
-      ) : null
-    )}
+      ) : null;
+    })}
     {isAddingText && (
       <AddTextOverlay onAdd={onAddNewText} onCancel={onCancelAddText} />
     )}

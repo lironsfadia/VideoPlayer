@@ -70,40 +70,41 @@ export default function useVideoPlayer(source) {
     setDuration(data.duration);
     setVideoLoaded(true);
     setVideoDimensions({ width: data.width, height: data.height });
-    await generateThumbnail();
     setIsPlaying(true);
   }
 
-  const generateThumbnail = async () => {
-    console.log('Generating thumbnail...', thumbnailUri);
-    if (!source.uri) {
-      console.log('11111');
+  const generateThumbnail = async (time) => {
+    console.log('Generating thumbnail at time:', time);
+    if (source.uri) {
       try {
         const { path } = await createThumbnail({
           url: source.uri,
-          timeStamp: 1000,
+          timeStamp: time * 1000, // Convert seconds to milliseconds
         });
         console.log('Thumbnail generated:', path);
         setThumbnailUri(path);
       } catch (err) {
         console.error('Error generating thumbnail:', err);
       }
+    } else {
+      console.error('No valid source URI provided for thumbnail generation');
     }
   };
 
-  const handleFrameUpdate = (time) => {
+  const handleFrameUpdate = async (time) => {
     if (videoRef.current) {
       videoRef.current.seek(time);
-
+      generateThumbnail(time);
       // Pause the video immediately after seeking
       videoRef.current.pause();
       setIsPlaying(false);
 
       // Resume playback after a short delay (e.g., 2 seconds)
       setTimeout(() => {
+        setCurrentTime(time);
         videoRef.current?.resume();
         setIsPlaying(true);
-      }, 1000);
+      }, 8000);
     }
   };
 
