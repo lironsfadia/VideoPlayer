@@ -1,8 +1,9 @@
-import { View } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import VideoPlayer from './VideoPlayer';
 import { Text } from '@/components/ui/text';
 import CustomHeader from '@/components/ui/CustomHeader';
+import VideoPlayer from './videoPlayer/VideoPlayer';
 
 export default function VideoPlayerPage() {
   const { videoData } = useLocalSearchParams();
@@ -14,19 +15,36 @@ export default function VideoPlayerPage() {
     );
   } catch (error) {
     console.error('Error parsing video data:', error);
-    // Handle the error appropriately, maybe show an error message
     return (
-      <View>
-        <Text>Error loading video data</Text>
-      </View>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Text>Error loading video data</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ headerShown: false }} />
-      <CustomHeader />
-      {parsedVideoData && <VideoPlayer source={{ uri: parsedVideoData.uri }} />}
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <CustomHeader />
+        {parsedVideoData && (
+          <VideoPlayer source={{ uri: parsedVideoData.uri }} />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  container: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});

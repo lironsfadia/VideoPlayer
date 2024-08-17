@@ -1,23 +1,13 @@
 import { Tabs } from 'expo-router';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import CustomHeader from '@/components/ui/CustomHeader';
-import Orientation from 'react-native-orientation-locker';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  useEffect(() => {
-    // Lock the orientation to landscape for both iOS and Android
-    Orientation.lockToLandscape();
-
-    return () => {
-      // Unlock the orientation when the component unmounts
-      Orientation.unlockAllOrientations();
-    };
-  }, []);
 
   return (
     <Tabs

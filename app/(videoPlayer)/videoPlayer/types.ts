@@ -20,3 +20,17 @@ export interface useThumbnailProps {
   position: number;
   width: number;
 }
+
+export interface ControlPanelProps {
+  videoRef: React.RefObject<any>;
+  duration: number;
+  currentTime: number;
+  isPlaying: boolean;
+  thumbnailUri: string;
+  onScrub: (args: { videoRef: any; time: number }) => void;
+  onFrameUpdate: (time: number) => void;
+  onPlayPause: () => void;
+  onAddTextOverlay: () => void;
+  onTrimPress: () => void;
+  onSavePress: () => void;
+}

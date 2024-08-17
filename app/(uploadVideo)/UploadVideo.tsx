@@ -21,74 +21,48 @@ const UploadVideo = ({ onFinishUpload }: UploadVideoProps) => {
   const { pickVideo, video, uploading, handleUpload, videoName } =
     useUploadVideo({ onFinishUpload });
 
+  const renderButtonContent = () => (
+    <HStack className="items-center mt-1">
+      {uploading ? (
+        <ButtonSpinner color="white" />
+      ) : (
+        <ButtonIcon as={MaterialIcons} name="videocam" size={20} />
+      )}
+      <ButtonText
+        className="font-large text-lg ml-1"
+        color="$fuchsia500" // Matching text color with the icon
+        numberOfLines={2}
+        ellipsizeMode="tail"
+      >
+        {uploading
+          ? 'Uploading...'
+          : video
+            ? `Start Upload: "${videoName}"`
+            : 'Select Video'}
+      </ButtonText>
+    </HStack>
+  );
+
   return (
     <View className="bg-blue-500 p-5">
       {Snow()}
       <VStack className="w-4/5 items-center">
         <Text className="text-4xl font-bold text-fuchsia-500 mb-8">
-          {UPLOAD_BUTTON_TITLE}{' '}
+          {UPLOAD_BUTTON_TITLE}
         </Text>
-        {!video ? (
-          <ButtonGroup>
-            <Button
-              size="xl"
-              onPress={pickVideo}
-              bg="$fuchsia500"
-              borderColor="$fuchsia200"
-              borderWidth={3}
-              rounded="$md"
-              p="$5"
-            >
-              {uploading ? (
-                <ButtonSpinner color="$white" />
-              ) : (
-                <ButtonIcon
-                  as={MaterialIcons}
-                  name="videocam"
-                  size="2xl"
-                  mr="$2"
-                />
-              )}
-              <ButtonText
-                className="font-large text-lg ml-1 text-fuchsia-500"
-                color="$white"
-              >
-                Select Video
-              </ButtonText>
-            </Button>
-          </ButtonGroup>
-        ) : (
-          <ButtonGroup>
-            <Button
-              size="xl"
-              onPress={handleUpload}
-              bg="$fuchsia500"
-              borderColor="$fuchsia200"
-              borderWidth={3}
-              rounded="$md"
-              p="$5"
-            >
-              {uploading ? (
-                <ButtonSpinner color="$white" />
-              ) : (
-                <ButtonIcon
-                  as={MaterialIcons}
-                  name="videocam"
-                  size="2xl"
-                  mr="$2"
-                />
-              )}
-              <ButtonText
-                className="font-large text-lg ml-1 text-fuchsia-500"
-                color="$white"
-                numberOfLines={2}
-                ellipsizeMode="tail"
-              >
-                {uploading ? 'Uploading...' : `Start Upload: "${videoName}"`}
-              </ButtonText>
-            </Button>
-          </ButtonGroup>
-        )}
+        <ButtonGroup>
+          <Button
+            size="xl"
+            onPress={video ? handleUpload : pickVideo}
+            bg="$fuchsia500"
+            borderColor="$fuchsia200"
+            borderWidth={3}
+            rounded="$md"
+            p="$5"
+          >
+            {renderButtonContent()}
+          </Button>
+        </ButtonGroup>
         {uploading && (
           <HStack space="sm" className="items-center mt-3">
             <Spinner color="$fuchsia600" />

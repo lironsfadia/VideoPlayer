@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,16 +6,11 @@ import {
 } from '@react-navigation/native';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { Stack, useRouter, usePathname } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Button, ButtonIcon } from '@/components/ui/button';
 import { MaterialIcons } from '@expo/vector-icons';
 import '@/global.css';
 import 'react-native-reanimated';
-import Orientation from 'react-native-orientation-locker';
-
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
 
 const TabsHomeArrowButton = () => {
   const router = useRouter();
@@ -36,15 +31,6 @@ const TabsHomeArrowButton = () => {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  useEffect(() => {
-    // Lock the orientation to landscape for both iOS and Android
-    Orientation.lockToLandscape();
-
-    return () => {
-      // Unlock the orientation when the component unmounts
-      Orientation.unlockAllOrientations();
-    };
-  }, []);
 
   return (
     <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
@@ -59,6 +45,7 @@ export default function RootLayout() {
             headerTitleStyle: {
               fontWeight: 'bold',
             },
+            orientation: 'landscape',
           }}
         >
           <Stack.Screen

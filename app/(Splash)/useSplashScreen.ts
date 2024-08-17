@@ -11,7 +11,7 @@ import { ITEM_HEIGHT } from './consts';
 import { getScreenDimensions } from '@/core/utils';
 
 const useSplashScreen = () => {
-  const words = ['Video Player', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+  const words = ['Video Player', 'Add Overlay Texts', 'Upload Videos', 'Seek', 'Trim', 'See Thumbnails', 'Watch Videos',];
   const scrollY = useSharedValue(0);
   const { width, height } = getScreenDimensions();
 

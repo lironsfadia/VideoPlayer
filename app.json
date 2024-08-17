@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "liron"
+      "bundleIdentifier": "liron",
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {

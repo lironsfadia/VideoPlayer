@@ -5,6 +5,7 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import { useUploadVideoProps, VideoProps } from './types';
+import Video from 'react-native-video';
 
 const useUploadVideo = ({ onFinishUpload }: useUploadVideoProps) => {
   const [video, setVideo] = useState<VideoProps | null>(null);

@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 interface ActionButtonProps {
   title: string;
   handlePress: () => void;
-  iconName: keyof typeof MaterialIcons.glyphMap;
+  iconName: string;
 }
 
 const ActionButton = ({ title, handlePress, iconName }: ActionButtonProps) => {
@@ -13,14 +13,9 @@ const ActionButton = ({ title, handlePress, iconName }: ActionButtonProps) => {
     <Button
       onPress={handlePress}
       variant="solid"
-      size="md"
+      size="lg"
       className="flex-row items-center justify-center bg-gradient-to-r from-purple-600 to-pink-500 p-2 rounded-lg border-2 border-cyan-400 shadow-lg shadow-cyan-500/50"
     >
-      <ButtonIcon
-        as={MaterialIcons}
-        name={iconName}
-        className="text-2xl mr-2 text-white"
-      />
       <ButtonText className="text-white font-bold text-lg uppercase tracking-wider">
         {title}
       </ButtonText>
