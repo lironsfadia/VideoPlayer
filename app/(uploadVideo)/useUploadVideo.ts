@@ -20,10 +20,14 @@ const useUploadVideo = ({ onFinishUpload }: useUploadVideoProps) => {
     setUploading(true);
 
     try {
-      const destPath = `${RNFS.DocumentDirectoryPath}/${Date.now()}-${video.name}`;
-      await RNFS.copyFile(video.uri, destPath);
+      //const destPath = `${RNFS.DocumentDirectoryPath}/${Date.now()}-${video.name}`;
+      const destPath = `${RNFS.DocumentDirectoryPath}/${video.name}`;
+      const fileExists = await RNFS.exists(destPath);
+      if (!fileExists) {
+        await RNFS.copyFile(video.uri, destPath);
+        console.log('Video saved successfully at:', destPath);
+      }
       onFinishUpload({ uri: destPath });
-      console.log('Video saved successfully at:', destPath);
 
       // Clear the selected video
       setVideo(null);

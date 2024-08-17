@@ -181,5 +181,6 @@ export default function useVideoPlayer(source) {
     setIsTrimModalVisible,
     handleSave,
     isPlaying,
+    setTextOverlays,
   };
 }

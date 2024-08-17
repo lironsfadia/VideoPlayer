@@ -34,6 +34,7 @@ const VideoPlayer = ({ source }) => {
     handleScrub,
     handleFrameUpdate,
     handleSave,
+    setTextOverlays,
   } = useVideoPlayer(source);
 
   return (
@@ -52,6 +53,7 @@ const VideoPlayer = ({ source }) => {
             <Text style={styles.loadingText}>Loading video...</Text>
           )}
           <OverlayManager
+            videoId={source.uri}
             textOverlays={textOverlays}
             currentTime={currentTime}
             isAddingText={isAddingText}
@@ -60,6 +62,7 @@ const VideoPlayer = ({ source }) => {
             onUpdateOverlay={handleUpdateOverlay}
             onDeleteOverlay={handleDeleteOverlay}
             duration={duration}
+            setTextOverlays={setTextOverlays}
           />
         </View>
         <View style={styles.controlsContainer}>

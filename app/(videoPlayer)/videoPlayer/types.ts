@@ -36,6 +36,7 @@ export interface ControlPanelProps {
 }
 
 export interface OverlayManagerProps {
+  videoId: string;
   textOverlays: any[];
   currentTime: number;
   isAddingText: boolean;

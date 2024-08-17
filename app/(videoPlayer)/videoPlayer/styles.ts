@@ -49,6 +49,7 @@ export default StyleSheet.create({
     bottom: 0,
     left: HORIZONTAL_PADDING / 2,
     right: HORIZONTAL_PADDING / 2,
+    marginRight: 30,
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 1,

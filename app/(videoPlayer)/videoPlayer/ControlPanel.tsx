@@ -21,7 +21,7 @@ const ControlPanel = ({
   onSavePress,
   textOverlays,
 }: ControlPanelProps) => (
-  <View style={styles.controlsContainer}>
+  <View>
     <OverlayTimeline duration={duration} textOverlays={textOverlays} />
 
     <Timeline
