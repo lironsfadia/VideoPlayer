@@ -1,28 +1,19 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { ITEM_HEIGHT } from './consts';
-import useWordSlotMachine from './useWordSlotMachine';
-import AnimatedDots from '@/components/ui/AnimatedDots';
+import { ITEM_HEIGHT, SPLASH_TITLE } from './consts';
+import Snow from '@/components/ui/Snow';
+import useSplashScreen from './useSplashScreen';
 
-const WordSlotMachine = () => {
-  const { animatedStyle, words, height, width } = useWordSlotMachine();
-
-  const dots = Array(50)
-    .fill(0)
-    .map((_, i) => (
-      <AnimatedDots
-        key={i}
-        startPos={{ x: Math.random() * width, y: Math.random() * height }}
-      />
-    ));
+const SplashScreen = () => {
+  const { animatedStyle, words } = useSplashScreen();
 
   return (
     <View className="flex-1 justify-center items-center bg-blue-500">
-      {dots}
+      {Snow()}
       <View className="w-4/5 items-center">
         <Text className="text-4xl font-bold text-fuchsia-500 mb-8">
-          Papaya's Exercise V1
+          {SPLASH_TITLE}
         </Text>
         <View
           className="overflow-hidden border-2 border-fuchsia-500 rounded-md"
@@ -45,4 +36,4 @@ const WordSlotMachine = () => {
   );
 };
 
-export default WordSlotMachine;
+export default SplashScreen;

@@ -1,24 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Dimensions } from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-import { Link, Stack } from 'expo-router';
+import { useUploadVideoProps, VideoProps } from './types';
 
-interface Video {
-  fileCopyUri: null;
-  name: string;
-  size: number;
-  type: string;
-  uri: string;
-}
-
-const useUploadVideo = (onFinishUpload) => {
-  const [video, setVideo] = useState<Video | null>(null);
+const useUploadVideo = ({ onFinishUpload }: useUploadVideoProps) => {
+  const [video, setVideo] = useState<VideoProps | null>(null);
   const [uploading, setUploading] = useState(false);
-
-  const { width, height } = Dimensions.get('window'); // Get screen dimensions
 
   const handleUpload = async () => {
     if (!video) {
@@ -29,14 +19,9 @@ const useUploadVideo = (onFinishUpload) => {
     setUploading(true);
 
     try {
-      // Define the destination path
       const destPath = `${RNFS.DocumentDirectoryPath}/${Date.now()}-${video.name}`;
-
-      // Copy the file to the new location
       await RNFS.copyFile(video.uri, destPath);
-
       onFinishUpload({ uri: destPath });
-
       console.log('Video saved successfully at:', destPath);
 
       // Clear the selected video
@@ -50,9 +35,7 @@ const useUploadVideo = (onFinishUpload) => {
 
   const onFileSelect = (file: DocumentPickerResponse) => {
     console.log('Selected file:', file);
-    /* 
-    {"fileCopyUri": null, "name": "liron1.mp4", "size": 3130478, "type": "video/mp4", "uri": "file:///private/var/mobile/Containers/Data/Application/9A5DF0FB-804E-4F45-ADB3-25B2271DA597/tmp/liron-Inbox/liron1.mp4"}
-    */
+
     setVideo(file);
   };
 
@@ -76,8 +59,6 @@ const useUploadVideo = (onFinishUpload) => {
     pickVideo,
     video,
     uploading,
-    width,
-    height,
     videoName: video?.name,
   };
 };

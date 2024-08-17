@@ -1,13 +1,23 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import CustomHeader from '@/components/ui/CustomHeader';
+import Orientation from 'react-native-orientation-locker';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  useEffect(() => {
+    // Lock the orientation to landscape for both iOS and Android
+    Orientation.lockToLandscape();
+
+    return () => {
+      // Unlock the orientation when the component unmounts
+      Orientation.unlockAllOrientations();
+    };
+  }, []);
 
   return (
     <Tabs
@@ -30,9 +40,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="about"
         options={{
-          title: 'Explore',
+          title: 'About',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? 'code-slash' : 'code-slash-outline'}
@@ -40,7 +50,7 @@ export default function TabLayout() {
             />
           ),
           headerShown: false, // Show header for explore tab
-          header: () => <CustomHeader title="Explore" />,
+          header: () => <CustomHeader />,
         }}
       />
     </Tabs>

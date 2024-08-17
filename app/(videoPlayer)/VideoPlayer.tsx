@@ -166,6 +166,7 @@ const VideoPlayer = ({ source }) => {
 
   const { width: screenWidth, height: screenHeight } = screenDimensions;
 
+  console.log({ source });
   return (
     <SafeAreaView
       style={[styles.container, { width: screenWidth, height: screenHeight }]}
@@ -177,7 +178,7 @@ const VideoPlayer = ({ source }) => {
             source={source}
             style={styles.video}
             onProgress={onProgress}
-            resizeMode="cover"
+            //resizeMode="cover"
             repeat
             playInBackground={false}
             onBuffer={onBuffer}

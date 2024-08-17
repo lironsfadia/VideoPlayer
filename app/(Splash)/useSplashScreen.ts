@@ -10,7 +10,7 @@ import {
 import { ITEM_HEIGHT } from './consts';
 import { getScreenDimensions } from '@/core/utils';
 
-const useWordSlotMachine = () => {
+const useSplashScreen = () => {
   const words = ['Video Player', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
   const scrollY = useSharedValue(0);
   const { width, height } = getScreenDimensions();
@@ -45,4 +45,4 @@ const useWordSlotMachine = () => {
   return { animatedStyle, words, height, width };
 };
 
-export default useWordSlotMachine;
+export default useSplashScreen;

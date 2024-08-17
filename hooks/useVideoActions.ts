@@ -1,4 +1,4 @@
-import { ProcessingManager } from 'react-native-video-processing';
+//import { ProcessingManager } from 'react-native-video-processing';
 import RNFS from 'react-native-fs';
 
 export function useVideoActions() {
@@ -19,19 +19,20 @@ export function useVideoActions() {
       };
 
       console.log('1');
-      const newSource = await ProcessingManager.trim(source, options);
+      videoRef.current?.pause();
+      // const newSource = await ProcessingManager.trim(source, options);
 
-      console.log('Trimmed video:', newSource);
-      // Ensure the trim was successful
-      if (!newSource) {
-        throw new Error('Video trimming failed');
-      }
+      // console.log('Trimmed video:', newSource);
+      // // Ensure the trim was successful
+      // if (!newSource) {
+      //   throw new Error('Video trimming failed');
+      // }
 
-      // Rename the trimmed video to the original filename
-      await RNFS.moveFile(newSource, source);
+      // // Rename the trimmed video to the original filename
+      // await RNFS.moveFile(newSource, source);
 
-      console.log('Video trimmed and saved successfully');
-      videoRef.current?.save(newSource);
+      // console.log('Video trimmed and saved successfully');
+      // videoRef.current?.save(newSource);
     } catch (error) {
       console.error('Error trimming video:', error);
       // Handle the error (e.g., show an error message to the user)

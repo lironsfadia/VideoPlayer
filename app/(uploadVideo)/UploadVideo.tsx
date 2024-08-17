@@ -1,7 +1,6 @@
 import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import useUploadVideo from './useUploadVideo';
-import AnimatedDots from '../../components/ui/AnimatedDots';
 import { View } from 'react-native';
 import {
   Button,
@@ -14,31 +13,17 @@ import { HStack } from '@/components/ui/hstack';
 import { Spinner } from '@/components/ui/spinner';
 import { VStack } from '@/components/ui/vstack';
 import { Text } from '@/components/ui/text';
-import { Image } from '@/components/ui/image';
 import { UPLOAD_BUTTON_TITLE } from './consts';
+import { UploadVideoProps } from './types';
+import Snow from '@/components/ui/Snow';
 
-const UploadVideo = ({ onFinishUpload }) => {
-  const {
-    pickVideo,
-    video,
-    uploading,
-    width,
-    height,
-    handleUpload,
-    videoName,
-  } = useUploadVideo(onFinishUpload);
-  const dots = Array(50)
-    .fill(0)
-    .map((_, i) => (
-      <AnimatedDots
-        key={i}
-        startPos={{ x: Math.random() * width, y: Math.random() * height }}
-      />
-    ));
+const UploadVideo = ({ onFinishUpload }: UploadVideoProps) => {
+  const { pickVideo, video, uploading, handleUpload, videoName } =
+    useUploadVideo({ onFinishUpload });
 
   return (
     <View className="bg-blue-500 p-5">
-      {dots}
+      {Snow()}
       <VStack className="w-4/5 items-center">
         <Text className="text-4xl font-bold text-fuchsia-500 mb-8">
           {UPLOAD_BUTTON_TITLE}{' '}
@@ -96,6 +81,8 @@ const UploadVideo = ({ onFinishUpload }) => {
               <ButtonText
                 className="font-large text-lg ml-1 text-fuchsia-500"
                 color="$white"
+                numberOfLines={2}
+                ellipsizeMode="tail"
               >
                 {uploading ? 'Uploading...' : `Start Upload: "${videoName}"`}
               </ButtonText>

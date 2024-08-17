@@ -21,7 +21,7 @@ const Timeline = ({
   thumbnailUri,
   onPlayPause,
   isPlaying,
-}) => {
+}: TimelineProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
   const timelineWidth = Dimensions.get('window').width - 100; // Adjust for padding and play button
@@ -91,7 +91,7 @@ const Timeline = ({
     [positionRef.current, timelineWidth]
   );
 
-  const formatTime = (timeInSeconds) => {
+  const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;

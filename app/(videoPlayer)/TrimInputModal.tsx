@@ -13,7 +13,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const TrimInputModal = ({ isVisible, onClose, onTrim, duration }) => {
+const TrimInputModal = ({ onClose, onTrim, duration }) => {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [dimensions, setDimensions] = useState(Dimensions.get('window'));
