@@ -4,9 +4,9 @@ import { View, StyleSheet } from 'react-native';
 import Thumbnail from '../thumbnail/Thumbnail';
 import { TimelineProps } from './types';
 import { useTimeline } from './useTimeline';
-import PlayButton from './PlayButton';
 import TimeDisplay from './TimeDisplay';
 import TimelineScrubber from './TimelineScrubber';
+import PlayPauseButton from './PlayPauseButton';
 
 const Timeline: React.FC<TimelineProps> = ({
   duration,
@@ -58,7 +58,7 @@ const Timeline: React.FC<TimelineProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.timelineContainer}>
-        <PlayButton isPlaying={isPlaying} onPlayPause={onPlayPause} />
+        <PlayPauseButton isPlaying={isPlaying} onPlayPause={onPlayPause} />
         <View style={styles.timelineWrapper}>
           <TimelineScrubber
             timelineWidth={timelineWidth}

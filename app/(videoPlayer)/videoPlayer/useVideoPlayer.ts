@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createThumbnail } from 'react-native-create-thumbnail';
 import { VideoRef } from 'react-native-video';
 
-import { getScreenDimensions } from '@/app/(videoPlayer)/timeline/core/utils';
 import { useVideoActions } from './useVideoActions';
-import { TextOverlayProps, TextOverlayType } from '../textOverlay/types';
+import { getScreenDimensions } from '../core/utils';
+import { TextOverlayType } from '../textOverlay/types';
 
 const useVideoState = (initialSource: { uri: string }) => {
   const [state, setState] = useState({

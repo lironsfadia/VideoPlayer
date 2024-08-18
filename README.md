@@ -1,4 +1,4 @@
-# Video Editor App
+# Video Player App
 
 ## Overview
 
@@ -16,21 +16,23 @@ This is a React Native application built with Expo for video editing. It allows 
    - Add text overlays to the video
    - Edit existing text overlays (position and content)
    - Delete text overlays
+   - Text overlays are displayed in real-time but only saved permanently when "Save Effects" is clicked
 
 3. **Video Trimming**:
 
    - Set start and end points for trimming
    - Preview trimmed video
+   - Trimmed version is created but only saved and displayed after clicking "Save Effects"
 
 4. **Thumbnail Generation**:
 
    - Generate thumbnails for specific video frames
    - Display thumbnails on the timeline
 
-5. **Save Edits**:
+5. **Save Effects**:
 
-   - Save all edits made to the video
-   - Export edited video
+   - Click "Save Effects" to permanently apply all edits (text overlays and trimming)
+   - Edited video is exported only after saving effects
 
 6. **Responsive Design**:
 
@@ -38,10 +40,44 @@ This is a React Native application built with Expo for video editing. It allows 
 
 7. **Real-time Preview**:
 
-   - See text overlays in real-time as you edit
+   - See text overlays and trimming effects in real-time as you edit
+   - Changes are temporary until "Save Effects" is clicked
 
 8. **Undo/Redo Functionality**:
    - Ability to undo and redo edits (to be implemented)
+
+## How Edits Are Applied
+
+### Text Overlays
+
+- When you add a text overlay, it will immediately appear on the video preview.
+- You can edit, move, or delete these overlays as needed.
+- These changes are temporary and for preview purposes only.
+- To permanently save the text overlays, you must click the "Save Effects" button.
+
+### Video Trimming
+
+- When you use the trim function, you'll see a preview of the trimmed video.
+- The original video file remains unchanged at this stage.
+- The trim points are remembered by the app but not yet applied to the video file.
+- Clicking "Save Effects" will apply the trim to the video and create a new, trimmed video file.
+
+### Save Effects Button
+
+- The "Save Effects" button is crucial for finalizing your edits.
+- Clicking this button will:
+  1. Permanently apply all text overlays to the video.
+  2. Create a new video file with the applied trim points.
+  3. Combine all effects into a final, edited video.
+- After saving effects, the new edited video will be displayed and available for further editing or export.
+
+### Important Note
+
+Always remember to click "Save Effects" before exiting the editor or if you want to make your changes permanent. Unsaved edits will be lost if you close the app or start editing a new video.
+
+## Libraries Used
+
+[The rest of the README remains unchanged]
 
 ## Libraries Used
 

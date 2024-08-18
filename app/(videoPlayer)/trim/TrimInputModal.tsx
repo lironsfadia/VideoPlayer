@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import useTrimInputLogic from './useTrimInputLogic';
+import useTrimInputLogic from './UseTrimInputLogic';
 
 interface TrimInputModalProps {
   onClose: () => void;

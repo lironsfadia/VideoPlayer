@@ -9,7 +9,7 @@ import {
 } from 'react-native-reanimated';
 
 import { ITEM_HEIGHT } from './consts';
-import { getScreenDimensions } from '@/app/(videoPlayer)/timeline/core/utils';
+import { getScreenDimensions } from '../(videoPlayer)/core/utils';
 
 const useSplashScreen = () => {
   const words = [

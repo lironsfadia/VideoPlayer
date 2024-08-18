@@ -1,22 +1,13 @@
 import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
 import { View } from 'react-native';
-import {
-  Button,
-  ButtonGroup,
-  ButtonIcon,
-  ButtonSpinner,
-  ButtonText,
-} from '@/app/components/ui/button';
+import { Button, ButtonGroup } from '@/app/components/ui/button';
 import Snow from '@/app/components/ui/Snow';
-import { HStack } from '@/app/components/ui/hstack';
 import { VStack } from '@/app/components/ui/vstack';
 import { Text } from '@/app/components/ui/text';
 import useUploadVideo from './useUploadVideo';
 import { UPLOAD_BUTTON_TITLE } from './consts';
 import { UploadVideoProps } from './types';
 import UploadingIndicator from '@/app/components/ui/UploadingIndicator';
-import UploadVideoButtons from './UploadVideoButton';
 import UploadVideoButton from './UploadVideoButton';
 
 const UploadVideo = ({ onFinishUpload }: UploadVideoProps) => {

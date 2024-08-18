@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
-import { loadOverlays } from '@/app/(videoPlayer)/timeline/core/utils';
 import { OVERLAY_DURATION } from './consts';
 import { UseOverlayManagerProps } from './types';
+import { loadOverlays } from '../core/utils';
 
 const useOverlayManager = ({
   videoId,
