@@ -40,14 +40,8 @@ const Timeline: React.FC<TimelineProps> = ({
       return (
         <Thumbnail
           uri={thumbnailUri}
-          time={
-            (safePosition.__getValue() / timelineWidth.__getValue()) *
-            durationRef.current
-          }
-          position={Math.min(
-            safePosition.__getValue(),
-            timelineWidth.__getValue() - 100
-          )}
+          time={(safePosition / timelineWidth) * durationRef.current}
+          position={Math.min(safePosition, timelineWidth - 100)}
           width={100}
         />
       );

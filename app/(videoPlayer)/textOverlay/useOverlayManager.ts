@@ -18,7 +18,8 @@ const useOverlayManager = ({
     };
 
     fetchOverlays();
-  }, [videoId, setTextOverlays]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoId]);
 
   const visibleOverlays = useMemo(() => {
     return textOverlays.filter((overlay) => {
