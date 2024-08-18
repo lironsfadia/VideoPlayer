@@ -11,9 +11,13 @@ const useOverlayManager = ({
 }: UseOverlayManagerProps) => {
   useEffect(() => {
     const fetchOverlays = async () => {
-      const savedOverlays = await loadOverlays(videoId);
-      if (savedOverlays) {
-        setTextOverlays(savedOverlays);
+      try {
+        const savedOverlays = await loadOverlays(videoId);
+        if (savedOverlays) {
+          setTextOverlays(savedOverlays);
+        }
+      } catch (error) {
+        console.error('Error fetching overlays:', error);
       }
     };
 
