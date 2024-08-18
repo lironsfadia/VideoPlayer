@@ -77,10 +77,6 @@ Always remember to click "Save Effects" before exiting the editor or if you want
 
 ## Libraries Used
 
-[The rest of the README remains unchanged]
-
-## Libraries Used
-
 1. **Expo**: Framework and platform for universal React applications
 2. **React Native**: Core framework for building the mobile app
 3. **FFmpeg**: For video processing tasks (via `ffmpeg-kit-react-native`)
@@ -120,8 +116,8 @@ To set up this Expo project:
 2. **Clone the repository**:
 
    ```
-   git clone https://github.com/your-repo/video-editor-app.git
-   cd video-editor-app
+   git clone https://github.com/lironsfadia/VideoPlayer.git
+   cd VideoPlayer
    ```
 
 3. **Install dependencies**:
@@ -138,24 +134,15 @@ To set up this Expo project:
 
 4. **Set up FFmpeg**:
 
-   - Follow the setup instructions for `ffmpeg-kit-react-native` in their documentation
+   - Follow the setup instructions for `ffmpeg-kit-react-native` in their documentation:
+     Add this line to podfile: pod 'ffmpeg-kit-react-native', :subspecs => ['https'], :podspec => '../node_modules/ffmpeg-kit-react-native/ffmpeg-kit-react-native.podspec'
 
 5. **Run the project**:
 
    ```
-   expo start
+   npx expo prebuild
+   npx expo run -c
+   npx expo run:ios --device
    ```
 
-6. **Running on a device/simulator**:
-
-   - For iOS: Press 'i' in the terminal or run on Xcode
-   - For Android: Press 'a' in the terminal or run on Android Studio
-
-7. **Building for production**:
-   ```
-   expo build:android
-   ```
-   or
-   ```
-   expo build:ios
-   ```
+   NOTE - This project was tested only on a real iOS device.
