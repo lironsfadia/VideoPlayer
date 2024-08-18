@@ -1,57 +1,54 @@
-// ControlPanel.tsx
 import React from 'react';
 import { View } from 'react-native';
-import styles from './styles';
 import { ControlPanelProps } from './types';
 import Timeline from '../timeline/Timeline';
-import ActionButton from '../ui/ActionButton';
-import OverlayTimeline from '../textOverlay/OverlayTimeline';
+import OverlayTimeline from '../timeline/OverlayTimeline';
+import ActionButtons from './ActionButtons';
 
-const ControlPanel = ({
-  videoRef,
-  duration,
-  currentTime,
-  isPlaying,
-  thumbnailUri,
-  onScrub,
-  onFrameUpdate,
-  onPlayPause,
-  onAddTextOverlay,
-  onTrimPress,
-  onSavePress,
-  textOverlays,
-}: ControlPanelProps) => (
-  <View>
-    <OverlayTimeline duration={duration} textOverlays={textOverlays} />
+const ControlPanel: React.FC<ControlPanelProps> = React.memo(
+  ({
+    videoRef,
+    duration,
+    currentTime,
+    isPlaying,
+    thumbnailUri,
+    onScrub,
+    onFrameUpdate,
+    onPlayPause,
+    onAddTextOverlay,
+    onTrimPress,
+    onSavePress,
+    textOverlays,
+    isPendingTrimVersion,
+    isInTrimProgress,
+  }) => (
+    <View>
+      <OverlayTimeline duration={duration} textOverlays={textOverlays} />
 
-    <Timeline
-      videoRef={videoRef}
-      duration={duration}
-      onScrub={onScrub}
-      currentTime={currentTime}
-      onFrameUpdate={onFrameUpdate}
-      thumbnailUri={thumbnailUri}
-      isPlaying={isPlaying}
-      onPlayPause={onPlayPause}
-    />
-    <View style={styles.buttonContainer}>
-      <ActionButton
-        title="Add Text"
-        handlePress={onAddTextOverlay}
-        iconName={'text-format'}
+      <Timeline
+        videoRef={videoRef}
+        duration={duration}
+        onScrub={onScrub}
+        currentTime={currentTime}
+        onFrameUpdate={onFrameUpdate}
+        thumbnailUri={thumbnailUri}
+        isPlaying={isPlaying}
+        onPlayPause={onPlayPause}
       />
-      <ActionButton
-        title="Trim"
-        handlePress={onTrimPress}
-        iconName={'content-cut'}
-      />
-      <ActionButton
-        title="Save Effects"
-        handlePress={onSavePress}
-        iconName={'save'}
+
+      <ActionButtons
+        onAddTextOverlay={onAddTextOverlay}
+        onTrimPress={onTrimPress}
+        onSavePress={onSavePress}
+        disableAddText={isInTrimProgress}
+        disableSave={
+          (!isPendingTrimVersion && textOverlays.length === 0) ||
+          isInTrimProgress
+        }
+        disableTrim={isInTrimProgress}
       />
     </View>
-  </View>
+  )
 );
 
 export default ControlPanel;

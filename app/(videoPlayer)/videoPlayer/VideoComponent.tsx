@@ -2,6 +2,7 @@
 import React from 'react';
 import Video from 'react-native-video';
 import styles from './styles';
+import { VideoComponentProps } from './types';
 
 const VideoComponent = ({
   videoRef,
@@ -10,7 +11,7 @@ const VideoComponent = ({
   onBuffer,
   onError,
   onLoad,
-}) => (
+}: VideoComponentProps) => (
   <Video
     ref={videoRef}
     source={source}

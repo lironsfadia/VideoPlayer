@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
-import { Text } from '@/components/ui/text';
+import { Text } from '@/app/components/ui/text';
 import useThumbnail from './useThumbnail';
-import { ThumbnailProps } from '../videoPlayer/types';
+import { ThumbnailProps } from './types';
 
 const Thumbnail = ({ uri, time, position, width }: ThumbnailProps) => {
   const { thumbnailPosition, formatTime } = useThumbnail({

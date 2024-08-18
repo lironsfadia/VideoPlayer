@@ -1,14 +1,9 @@
-import React, { useState, useRef } from 'react';
-import {
-  View,
-  TextInput,
-  PanResponder,
-  Animated,
-  StyleSheet,
-} from 'react-native';
+import React from 'react';
+import { View, TextInput, Animated, StyleSheet } from 'react-native';
 
-import { Text } from '@/components/ui/text';
+import { Text } from '@/app/components/ui/text';
 import { TextOverlayProps } from './types';
+import useTextOverlay from './useTextOverlay';
 
 const TextOverlay = ({
   id,
@@ -17,45 +12,36 @@ const TextOverlay = ({
   onUpdate,
   onDelete,
 }: TextOverlayProps) => {
-  const [text, setText] = useState(initialText);
-  const [editing, setEditing] = useState(false);
-  const pan = useRef(new Animated.ValueXY(initialPosition)).current;
-
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-      useNativeDriver: false,
-    }),
-    onPanResponderRelease: () => {
-      onUpdate(id, text, { x: pan.x._value, y: pan.y._value });
-    },
-  });
+  const {
+    text,
+    editing,
+    panResponder,
+    animatedStyle,
+    handleTextChange,
+    handleEditToggle,
+    handleBlur,
+    handleDelete,
+  } = useTextOverlay({ id, initialText, initialPosition, onUpdate, onDelete });
 
   return (
     <Animated.View
-      style={[
-        styles.container,
-        { transform: [{ translateX: pan.x }, { translateY: pan.y }] },
-      ]}
+      style={[styles.container, animatedStyle]}
       {...panResponder.panHandlers}
     >
       {editing ? (
         <TextInput
           value={text}
-          onChangeText={setText}
-          onBlur={() => {
-            setEditing(false);
-            onUpdate(id, text, { x: pan.x._value, y: pan.y._value });
-          }}
+          onChangeText={handleTextChange}
+          onBlur={handleBlur}
           style={styles.input}
           autoFocus
         />
       ) : (
         <View>
-          <Text onPress={() => setEditing(true)} style={styles.text}>
+          <Text onPress={handleEditToggle} style={styles.text}>
             {text}
           </Text>
-          <Text onPress={() => onDelete(id)} style={styles.deleteButton}>
+          <Text onPress={handleDelete} style={styles.deleteButton}>
             ✕
           </Text>
         </View>

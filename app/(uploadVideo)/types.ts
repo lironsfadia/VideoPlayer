@@ -13,3 +13,9 @@ export interface UploadVideoProps {
 export interface useUploadVideoProps {
   onFinishUpload: (video: Pick<VideoProps, 'uri'>) => void;
 }
+
+export interface UploadVideoButtonProps {
+  isUploading: boolean;
+  video: VideoProps | null;
+  videoName: string | undefined;
+}

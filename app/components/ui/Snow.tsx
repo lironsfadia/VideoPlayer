@@ -1,6 +1,6 @@
 import React from 'react';
 import AnimatedDots from './AnimatedDots';
-import { getScreenDimensions } from '@/core/utils';
+import { getScreenDimensions } from '@/app/(videoPlayer)/timeline/core/utils';
 
 const Snow = () => {
   const { width, height } = getScreenDimensions();

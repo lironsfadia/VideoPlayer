@@ -2,8 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 
-import { Text } from '@/components/ui/text';
-import CustomHeader from '@/components/ui/CustomHeader';
+import { Text } from '@/app/components/ui/text';
+import CustomHeader from '@/app/components/ui/CustomHeader';
 
 import VideoPlayer from './videoPlayer/VideoPlayer';
 

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   TextInput,
@@ -7,46 +7,13 @@ import {
   Animated,
 } from 'react-native';
 
-import { Text } from '@/components/ui/text';
-
-interface AddTextOverlayProps {
-  onAdd: (text: string, position: { x: number; y: number }) => void;
-  onCancel: () => void;
-}
+import { Text } from '@/app/components/ui/text';
+import { AddTextOverlayProps } from './types';
+import useAddTextOverlay from './useAddTextOverlay';
 
 const AddTextOverlay = ({ onAdd, onCancel }: AddTextOverlayProps) => {
-  const [text, setText] = useState('');
-  const inputRef = useRef<TextInput>(null);
-  const glowAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(glowAnim, {
-          toValue: 1,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(glowAnim, {
-          toValue: 0,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }, []);
-
-  const handleAdd = () => {
-    if (text.trim()) {
-      onAdd(text, { x: 50, y: 50 });
-    } else {
-      onCancel();
-    }
-  };
-
-  const glowStyle = {
-    shadowOpacity: glowAnim,
-  };
+  const { text, inputRef, glowStyle, handleAdd, handleTextChange } =
+    useAddTextOverlay({ onAdd, onCancel });
 
   return (
     <View style={styles.container}>
@@ -55,7 +22,7 @@ const AddTextOverlay = ({ onAdd, onCancel }: AddTextOverlayProps) => {
           ref={inputRef}
           style={styles.input}
           value={text}
-          onChangeText={setText}
+          onChangeText={handleTextChange}
           placeholder="Enter rad text"
           placeholderTextColor="rgba(255,255,255,0.5)"
           autoFocus

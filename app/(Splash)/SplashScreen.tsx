@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import Snow from '@/components/ui/Snow';
+import Snow from '@/app/components/ui/Snow';
 import useSplashScreen from './useSplashScreen';
 
 import { ITEM_HEIGHT, SPLASH_TITLE } from './consts';

@@ -4,10 +4,10 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { GluestackUIProvider } from '@/app/components/ui/gluestack-ui-provider';
 import { Stack, useRouter, usePathname } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Button, ButtonIcon } from '@/components/ui/button';
+import { Button, ButtonIcon } from '@/app/components/ui/button';
 import { MaterialIcons } from '@expo/vector-icons';
 import '@/global.css';
 import 'react-native-reanimated';

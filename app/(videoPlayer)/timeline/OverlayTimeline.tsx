@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { OverlayTimelineProps } from './types';
 
-import { TextOverlay } from './types';
-
-const OverlayTimeline = ({ duration, textOverlays }) => {
+const OverlayTimeline = ({ duration, textOverlays }: OverlayTimelineProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.timeline}>

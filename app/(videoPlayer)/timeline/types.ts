@@ -1,4 +1,5 @@
 import { Animated } from 'react-native';
+import { TextOverlayType } from '../textOverlay/types';
 
 export interface TimelineProps {
   duration: number;
@@ -27,4 +28,20 @@ export interface TimelineHookReturn {
   safePosition: number;
   glowAnim: Animated.Value;
   formatTime: (timeInSeconds: number) => string;
+}
+
+export interface OverlayTimelineProps {
+  duration: number;
+  textOverlays: TextOverlayType[];
+}
+
+export interface PlayPauseButtonProps {
+  isPlaying: boolean;
+  onPlayPause: () => void;
+}
+
+export interface TimeDisplayProps {
+  currentTime: number;
+  duration: number;
+  formatTime: (time: number) => string;
 }

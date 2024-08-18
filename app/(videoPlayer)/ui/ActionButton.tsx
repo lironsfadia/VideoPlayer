@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Button, ButtonText } from '@/app/components/ui/button';
 
 interface ActionButtonProps {
   title: string;

@@ -1,6 +1,29 @@
 import { FFmpegKit, FFprobeKit, ReturnCode } from 'ffmpeg-kit-react-native';
 import RNFS from 'react-native-fs';
 
+export const executeTrimCommand = async (command: string): Promise<void> => {
+  const session = await FFmpegKit.execute(command);
+  const returnCode = await session.getReturnCode();
+
+  if (!ReturnCode.isSuccess(returnCode)) {
+    const logs = await session.getLogs();
+    throw new Error(`Video trimming failed. FFmpeg logs: ${logs}`);
+  }
+};
+
+export const moveFile = async (
+  source: string,
+  destination: string
+): Promise<void> => {
+  try {
+    await RNFS.moveFile(source, destination);
+  } catch (error) {
+    throw new Error(
+      `Failed to move file from ${source} to ${destination}: ${error}`
+    );
+  }
+};
+
 const generateUniqueFileName = async (
   basePath: string,
   baseName: string,

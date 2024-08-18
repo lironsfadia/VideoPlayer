@@ -4,11 +4,11 @@ import useVideoPlayer from './useVideoPlayer';
 import VideoComponent from './VideoComponent';
 import OverlayManager from '../textOverlay/OverlayManager';
 import ControlPanel from './ControlPanel';
-import { Text } from '@/components/ui/text';
+import { Text } from '@/app/components/ui/text';
 import styles from './styles';
 import TrimInputModal from '../trim/TrimInputModal';
 
-const VideoPlayer = ({ source }) => {
+const VideoPlayer = ({ source }: VideoPlayerProps) => {
   const {
     videoRef,
     isPlaying,
@@ -36,6 +36,7 @@ const VideoPlayer = ({ source }) => {
     handleSave,
     setTextOverlays,
     isInTrimProgress,
+    isPendingTrimVersion,
   } = useVideoPlayer(source);
 
   return (
@@ -83,6 +84,8 @@ const VideoPlayer = ({ source }) => {
             onTrimPress={() => setIsTrimModalVisible(true)}
             onSavePress={handleSave}
             textOverlays={textOverlays}
+            isInTrimProgress={isInTrimProgress}
+            isPendingTrimVersion={false}
           />
         </View>
       </View>

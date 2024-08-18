@@ -1,3 +1,5 @@
+import { TextOverlayType } from '../textOverlay/types';
+
 export interface VideoRef {
   current: {
     seek: (time: number) => void;
@@ -21,12 +23,6 @@ export interface VideoActions {
     videoRef: VideoRef
   ) => Promise<void>;
 }
-export interface ThumbnailProps {
-  uri: string;
-  time: number;
-  position: number;
-  width: number;
-}
 
 export interface TimelineProps {
   duration: number;
@@ -37,11 +33,6 @@ export interface TimelineProps {
   thumbnailUri: string;
   onPlayPause: () => void;
   isPlaying: boolean;
-}
-
-export interface useThumbnailProps {
-  position: number;
-  width: number;
 }
 
 export interface ControlPanelProps {
@@ -56,31 +47,34 @@ export interface ControlPanelProps {
   onAddTextOverlay: () => void;
   onTrimPress: () => void;
   onSavePress: (...args: any[]) => void;
-  textOverlays: TextOverlay[];
-}
-
-export interface TextOverlay {
-  id: number;
-  time: number;
-  text: string;
-  position: { x: number; y: number };
-}
-export interface OverlayManagerProps {
-  videoId: string;
-  textOverlays: TextOverlay[];
-  currentTime: number;
-  isAddingText: boolean;
-  onAddNewText: () => void;
-  onCancelAddText: () => void;
-  onUpdateOverlay: (
-    id: number,
-    text: string,
-    position: { x: number; y: number }
-  ) => void;
-  onDeleteOverlay: (id: number) => void;
+  textOverlays: TextOverlayType[];
+  isPendingTrimVersion: boolean;
+  isInTrimProgress: boolean;
 }
 
 export interface useVideoActionsProps {
   videoId: string;
-  textOverlays: TextOverlay[];
+  textOverlays: TextOverlayType[];
+}
+
+export interface VideoComponentProps {
+  videoRef: React.RefObject<any>;
+  source: { uri: string };
+  onProgress: (data: { currentTime: number; playableDuration: number }) => void;
+  onBuffer: ({ isBuffering }: { isBuffering: boolean }) => void;
+  onError: (error: { error: { code: number; message: string } }) => void;
+  onLoad: (data: { duration: number }) => void;
+}
+
+export interface VideoPlayerProps {
+  source: { uri: string };
+}
+
+export interface ActionButtonsProps {
+  onAddTextOverlay: () => void;
+  onTrimPress: () => void;
+  onSavePress: () => void;
+  disableAddText?: boolean;
+  disableTrim?: boolean;
+  disableSave?: boolean;
 }

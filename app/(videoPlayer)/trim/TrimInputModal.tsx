@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import {
   Modal,
   View,
@@ -10,78 +10,37 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Dimensions,
-  ScaledSize,
 } from 'react-native';
+import useTrimInputLogic from './useTrimInputLogic';
+
+interface TrimInputModalProps {
+  onClose: () => void;
+  onTrim: (startTime: number, endTime: number) => Promise<void>;
+  duration: number;
+}
 
 const TrimInputModal: React.FC<TrimInputModalProps> = ({
   onClose,
   onTrim,
   duration,
 }) => {
-  const [startTime, setStartTime] = useState<string>('');
-  const [endTime, setEndTime] = useState<string>('');
-  const [dimensions, setDimensions] = useState<ScaledSize>(
-    Dimensions.get('window')
-  );
-  const [startTimeError, setStartTimeError] = useState<string>('');
-  const [endTimeError, setEndTimeError] = useState<string>('');
-  const endTimeInputRef = useRef<TextInput>(null);
-
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setDimensions(window);
-    });
-    return () => subscription?.remove();
-  }, []);
-
-  const validateInput = (): boolean => {
-    let isValid = true;
-    const start = parseFloat(startTime);
-    const end = parseFloat(endTime);
-
-    if (isNaN(start) || start < 0) {
-      setStartTimeError('Start time must be a non-negative number');
-      isValid = false;
-    } else if (start >= duration) {
-      setStartTimeError('Start time must be less than video duration');
-      isValid = false;
-    } else {
-      setStartTimeError('');
-    }
-
-    if (isNaN(end) || end <= 0) {
-      setEndTimeError('End time must be a positive number');
-      isValid = false;
-    } else if (end > duration) {
-      setEndTimeError('End time must not exceed video duration');
-      isValid = false;
-    } else if (end <= start) {
-      setEndTimeError('End time must be greater than start time');
-      isValid = false;
-    } else {
-      setEndTimeError('');
-    }
-
-    return isValid;
-  };
-
-  const handleTrim = async (): Promise<void> => {
-    if (validateInput()) {
-      onClose();
-      await onTrim(parseFloat(startTime), parseFloat(endTime));
-    }
-  };
-
-  const handleStartTimeSubmit = (): void => {
-    endTimeInputRef.current?.focus();
-  };
+  const {
+    startTime,
+    setStartTime,
+    endTime,
+    setEndTime,
+    startTimeError,
+    endTimeError,
+    endTimeInputRef,
+    dimensions,
+    isPortrait,
+    handleTrim,
+    handleStartTimeSubmit,
+  } = useTrimInputLogic({ duration, onClose, onTrim });
 
   const handleDonePress = (): void => {
     Keyboard.dismiss();
   };
-
-  const isPortrait = dimensions.height > dimensions.width;
 
   return (
     <Modal

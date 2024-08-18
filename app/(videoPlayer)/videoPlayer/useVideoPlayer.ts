@@ -3,158 +3,211 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createThumbnail } from 'react-native-create-thumbnail';
 import { VideoRef } from 'react-native-video';
 
-import { getScreenDimensions } from '@/core/utils';
+import { getScreenDimensions } from '@/app/(videoPlayer)/timeline/core/utils';
 import { useVideoActions } from './useVideoActions';
-import { TextOverlay } from './types';
+import { TextOverlayProps, TextOverlayType } from '../textOverlay/types';
 
-export default function useVideoPlayer(source) {
-  const videoRef = useRef<VideoRef>(null);
-  const [isTrimModalVisible, setIsTrimModalVisible] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [thumbnailUri, setThumbnailUri] = useState('');
-  const [videoDimensions, setVideoDimensions] = useState({
-    width: 0,
-    height: 0,
+const useVideoState = (initialSource: { uri: string }) => {
+  const [state, setState] = useState({
+    isTrimModalVisible: false,
+    currentTime: 0,
+    videoLoaded: false,
+    thumbnailUri: '',
+    videoDimensions: { width: 0, height: 0 },
+    duration: 0,
+    textOverlays: [] as TextOverlayType[],
+    isAddingText: false,
+    isPlaying: false,
   });
-  const { width, height } = getScreenDimensions();
-  const [screenDimensions, setScreenDimensions] = useState({ width, height });
-  const [duration, setDuration] = useState(0);
-  const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([]);
-  const [isAddingText, setIsAddingText] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
-  const { handleScrub, handleTrim, handleSave, isInTrimProgress } =
-    useVideoActions({ videoId: source.uri, textOverlays: textOverlays });
+  const updateState = (newState) => {
+    setState((prevState) => ({ ...prevState, ...newState }));
+  };
+
+  return [state, updateState] as const;
+};
+
+const useScreenDimensions = () => {
+  const [screenDimensions, setScreenDimensions] = useState(
+    getScreenDimensions()
+  );
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setScreenDimensions(getScreenDimensions());
+    };
+    Dimensions.addEventListener('change', updateDimensions);
+    return () => {
+      // Remove listener if it exists
+      // @ts-ignore
+      if (Dimensions.removeEventListener) {
+        // @ts-ignore
+        Dimensions.removeEventListener('change', updateDimensions);
+      }
+    };
+  }, []);
+
+  return screenDimensions;
+};
+
+const useThumbnailGenerator = (source: { uri: string }) => {
+  const generateThumbnail = useCallback(
+    async (time: number) => {
+      console.log('Generating thumbnail at time:', time);
+      if (source.uri) {
+        try {
+          const { path } = await createThumbnail({
+            url: source.uri,
+            timeStamp: time * 1000, // Convert seconds to milliseconds
+          });
+          console.log('Thumbnail generated:', path);
+          return path;
+        } catch (err) {
+          console.error('Error generating thumbnail:', err);
+        }
+      } else {
+        console.error('No valid source URI provided for thumbnail generation');
+      }
+    },
+    [source.uri]
+  );
+
+  return generateThumbnail;
+};
+
+export default function useVideoPlayer(source: { uri: string }) {
+  const videoRef = useRef<VideoRef>(null);
+  const [state, updateState] = useVideoState(source);
+  const screenDimensions = useScreenDimensions();
+  const generateThumbnail = useThumbnailGenerator(source);
+
+  const {
+    handleScrub,
+    handleTrim,
+    handleSave,
+    isInTrimProgress,
+    isPendingTrimVersion,
+  } = useVideoActions({
+    videoId: source.uri,
+    textOverlays: state.textOverlays,
+  });
 
   const handlePlayPause = useCallback(() => {
-    if (isPlaying) {
+    if (state.isPlaying) {
       videoRef.current?.pause();
     } else {
       videoRef.current?.resume();
     }
-    setIsPlaying(!isPlaying);
-  }, [isPlaying]);
+    updateState({ isPlaying: !state.isPlaying });
+  }, [state.isPlaying]);
 
   useEffect(() => {
     console.log('VideoPlayer mounted');
-    const updateDimensions = () => {
-      const { width, height } = getScreenDimensions();
-      setScreenDimensions({ width, height });
-    };
-    Dimensions.addEventListener('change', updateDimensions);
     return () => {
       console.log('VideoPlayer unmounted');
       videoRef.current?.pause();
     };
   }, []);
 
-  const onTrim = async (start: number, end: number) => {
-    await handleTrim(start, end, source, videoRef);
-  };
+  const onTrim = useCallback(
+    async (start: number, end: number) => {
+      await handleTrim(start, end, source, videoRef);
+    },
+    [handleTrim, source]
+  );
 
-  const onProgress = (data) => {
-    setCurrentTime(data.currentTime);
-  };
+  const onProgress = useCallback((data) => {
+    updateState({ currentTime: data.currentTime });
+  }, []);
 
-  function onBuffer(e: Readonly<{ isBuffering: boolean }>): void {
+  const onBuffer = useCallback((e: Readonly<{ isBuffering: boolean }>) => {
     //console.log('Video buffering:', e.isBuffering);
-  }
+  }, []);
 
-  function onError(
-    e: Readonly<{ error: Readonly<{ code: string; message: string }> }>
-  ): void {
-    console.error('Video error:', e.error);
-  }
+  const onError = useCallback(
+    (e: Readonly<{ error: Readonly<{ code: string; message: string }> }>) => {
+      console.error('Video error:', e.error);
+    },
+    []
+  );
 
-  async function onLoad(
-    data: Readonly<{ duration: number; width: number; height: number }>
-  ): Promise<void> {
-    setDuration(data.duration);
-    setVideoLoaded(true);
-    setVideoDimensions({ width: data.width, height: data.height });
-    setIsPlaying(true);
-  }
+  const onLoad = useCallback(
+    async (
+      data: Readonly<{ duration: number; width: number; height: number }>
+    ) => {
+      updateState({
+        duration: data.duration,
+        videoLoaded: true,
+        videoDimensions: { width: data.width, height: data.height },
+        isPlaying: true,
+      });
+    },
+    []
+  );
 
-  const generateThumbnail = async (time: number) => {
-    console.log('Generating thumbnail at time:', time);
-    if (source.uri) {
-      try {
-        const { path } = await createThumbnail({
-          url: source.uri,
-          timeStamp: time * 1000, // Convert seconds to milliseconds
-        });
-        console.log('Thumbnail generated:', path);
-        setThumbnailUri(path);
-      } catch (err) {
-        console.error('Error generating thumbnail:', err);
+  const handleFrameUpdate = useCallback(
+    async (time: number) => {
+      if (videoRef.current) {
+        videoRef.current.seek(time);
+        const thumbnailUri = await generateThumbnail(time);
+        videoRef.current.pause();
+        updateState({ isPlaying: false, thumbnailUri });
+
+        setTimeout(() => {
+          updateState({ currentTime: time, isPlaying: true });
+          videoRef.current?.resume();
+        }, 2000);
       }
-    } else {
-      console.error('No valid source URI provided for thumbnail generation');
-    }
-  };
+    },
+    [generateThumbnail]
+  );
 
-  const handleFrameUpdate = async (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.seek(time);
-      generateThumbnail(time);
-      // Pause the video immediately after seeking
-      videoRef.current.pause();
-      setIsPlaying(false);
-
-      // Resume playback after a short delay (e.g., 2 seconds)
-      setTimeout(() => {
-        setCurrentTime(time);
-        videoRef.current?.resume();
-        setIsPlaying(true);
-      }, 2000);
-    }
-  };
-
-  const handleAddTextOverlay = () => {
+  const handleAddTextOverlay = useCallback(() => {
     videoRef.current?.pause();
-    setIsAddingText(true);
-  };
+    updateState({ isAddingText: true });
+  }, []);
 
-  const handleAddNewText = (
-    text: string,
-    position: { x: number; y: number }
-  ) => {
-    const newOverlay: TextOverlay = {
-      id: Date.now(),
-      text,
-      position,
-      time: currentTime,
-    };
-    setTextOverlays([...textOverlays, newOverlay]);
-    setIsAddingText(false);
+  const handleAddNewText = useCallback(
+    (text: string, position: { x: number; y: number }) => {
+      const newOverlay: TextOverlayType = {
+        id: Date.now(),
+        text,
+        position,
+        time: state.currentTime,
+      };
+      updateState({
+        textOverlays: [...state.textOverlays, newOverlay],
+        isAddingText: false,
+      });
+      videoRef.current?.resume();
+    },
+    [state.currentTime, state.textOverlays]
+  );
+
+  const handleCancelAddText = useCallback(() => {
+    updateState({ isAddingText: false });
     videoRef.current?.resume();
-  };
+  }, []);
 
-  const handleCancelAddText = () => {
-    setIsAddingText(false);
-    videoRef.current?.resume();
-  };
+  const handleUpdateOverlay = useCallback(
+    (id: number, text: string, position: { x: number; y: number }) => {
+      updateState({
+        textOverlays: state.textOverlays.map((overlay) =>
+          overlay.id === id ? { ...overlay, text, position } : overlay
+        ),
+      });
+    },
+    [state.textOverlays]
+  );
 
-  const handleUpdateOverlay = (
-    id: number,
-    text: string,
-    position: { x: number; y: number }
-  ) => {
-    setTextOverlays((overlays) =>
-      overlays.map((overlay) =>
-        overlay.id === id ? { ...overlay, text, position } : overlay
-      )
-    );
-  };
-
-  const handleDeleteOverlay = (id: number) => {
-    setTextOverlays((overlays) =>
-      overlays.filter((overlay) => overlay.id !== id)
-    );
-  };
-
-  const { width: screenWidth, height: screenHeight } = screenDimensions;
+  const handleDeleteOverlay = useCallback(
+    (id: number) => {
+      updateState({
+        textOverlays: state.textOverlays.filter((overlay) => overlay.id !== id),
+      });
+    },
+    [state.textOverlays]
+  );
 
   return {
     videoRef,
@@ -164,27 +217,22 @@ export default function useVideoPlayer(source) {
     onBuffer,
     onError,
     onLoad,
-    currentTime,
-    videoLoaded,
-    thumbnailUri,
-    videoDimensions,
-    duration,
-    textOverlays,
-    isAddingText,
+    handleFrameUpdate,
+    handleScrub,
     handleAddTextOverlay,
     handleAddNewText,
     handleCancelAddText,
     handleUpdateOverlay,
     handleDeleteOverlay,
-    handleFrameUpdate,
-    handleScrub,
-    screenWidth,
-    screenHeight,
-    isTrimModalVisible,
-    setIsTrimModalVisible,
     handleSave,
-    isPlaying,
-    setTextOverlays,
+    ...state,
+    screenWidth: screenDimensions.width,
+    screenHeight: screenDimensions.height,
+    setTextOverlays: (overlays: TextOverlayType[]) =>
+      updateState({ textOverlays: overlays }),
+    setIsTrimModalVisible: (visible: boolean) =>
+      updateState({ isTrimModalVisible: visible }),
     isInTrimProgress,
+    isPendingTrimVersion,
   };
 }
