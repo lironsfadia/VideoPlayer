@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SafeAreaView } from 'react-native';
+import { View, SafeAreaView, ActivityIndicator } from 'react-native';
 import useVideoPlayer from './useVideoPlayer';
 import VideoComponent from './VideoComponent';
 import OverlayManager from '../textOverlay/OverlayManager';
@@ -35,21 +35,25 @@ const VideoPlayer = ({ source }) => {
     handleFrameUpdate,
     handleSave,
     setTextOverlays,
+    isInTrimProgress,
   } = useVideoPlayer(source);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.videoContainer}>
-          <VideoComponent
-            videoRef={videoRef}
-            source={source}
-            onProgress={onProgress}
-            onBuffer={onBuffer}
-            onError={onError}
-            onLoad={onLoad}
-          />
-          {!videoLoaded && (
+          {isInTrimProgress && <ActivityIndicator />}
+          {!isInTrimProgress && (
+            <VideoComponent
+              videoRef={videoRef}
+              source={source}
+              onProgress={onProgress}
+              onBuffer={onBuffer}
+              onError={onError}
+              onLoad={onLoad}
+            />
+          )}
+          {(!videoLoaded || isInTrimProgress) && (
             <Text style={styles.loadingText}>Loading video...</Text>
           )}
           <OverlayManager

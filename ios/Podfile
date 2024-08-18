@@ -13,6 +13,9 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
+# Add this line before use_native_modules!
+pod 'ffmpeg-kit-react-native', :subspecs => ['https'], :podspec => '../node_modules/ffmpeg-kit-react-native/ffmpeg-kit-react-native.podspec'
+
 target 'VideoPlayer' do
   use_expo_modules!
   config = use_native_modules!
@@ -23,7 +26,6 @@ target 'VideoPlayer' do
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
@@ -36,8 +38,6 @@ target 'VideoPlayer' do
       :ccache_enabled => podfile_properties['apple.ccacheEnabled'] == 'true',
     )
 
-    # This is necessary for Xcode 14, because it signs resource bundles by default
-    # when building for devices.
     installer.target_installation_results.pod_target_installation_results
       .each do |pod_name, target_installation_result|
       target_installation_result.resource_bundle_targets.each do |resource_bundle_target|

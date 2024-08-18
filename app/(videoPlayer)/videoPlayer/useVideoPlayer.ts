@@ -7,7 +7,8 @@ import { VideoRef } from 'react-native-video';
 
 export default function useVideoPlayer(source) {
   const videoRef = useRef<VideoRef>(null);
-  const { handleScrub, handleTrim, handleSave } = useVideoActions();
+  const { handleScrub, handleTrim, handleSave, isInTrimProgress } =
+    useVideoActions();
   const { width, height } = getScreenDimensions();
   const [isTrimModalVisible, setIsTrimModalVisible] = useState(false);
 
@@ -182,5 +183,6 @@ export default function useVideoPlayer(source) {
     handleSave,
     isPlaying,
     setTextOverlays,
+    isInTrimProgress,
   };
 }
