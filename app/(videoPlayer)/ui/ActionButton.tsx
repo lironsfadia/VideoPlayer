@@ -1,16 +1,21 @@
 import React from 'react';
-import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Button, ButtonText } from '@/components/ui/button';
 
 interface ActionButtonProps {
   title: string;
-  handlePress: () => void;
-  iconName: string;
+  handlePress: (...args: any) => void;
+  disabled?: boolean;
+  iconName?: string;
 }
 
-const ActionButton = ({ title, handlePress, iconName }: ActionButtonProps) => {
+const ActionButton = ({
+  title,
+  handlePress,
+  disabled = false,
+}: ActionButtonProps) => {
   return (
     <Button
+      disabled={disabled}
       onPress={handlePress}
       variant="solid"
       size="lg"

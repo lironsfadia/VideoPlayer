@@ -1,3 +1,5 @@
+import { useThumbnailProps } from '../videoPlayer/types';
+
 const useThumbnail = ({ position, width }: useThumbnailProps) => {
   const thumbnailPosition = Math.max(
     0,

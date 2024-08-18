@@ -3,10 +3,10 @@ import {
   View,
   TextInput,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
   Animated,
 } from 'react-native';
+
 import { Text } from '@/components/ui/text';
 
 interface AddTextOverlayProps {
@@ -17,7 +17,6 @@ interface AddTextOverlayProps {
 const AddTextOverlay = ({ onAdd, onCancel }: AddTextOverlayProps) => {
   const [text, setText] = useState('');
   const inputRef = useRef<TextInput>(null);
-  const { width, height } = Dimensions.get('window');
   const glowAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import AddTextOverlay from './AddTextOverlay';
 import TextOverlay from './TextOverlay';
 import { OverlayManagerProps } from '../videoPlayer/types';
-import { loadOverlays, saveOverlays } from '@/core/utils';
+import { loadOverlays } from '@/core/utils';
 import { OVERLAY_DURATION } from './consts';
 
 const OverlayManager = ({
@@ -33,13 +33,6 @@ const OverlayManager = ({
     };
 
     fetchOverlays();
-
-    // Cleanup function to save overlays on unmount
-    return () => {
-      if (videoId && textOverlaysRef.current.length > 0) {
-        saveOverlays(videoId, textOverlaysRef.current);
-      }
-    };
   }, [videoId, setTextOverlays]);
 
   return (

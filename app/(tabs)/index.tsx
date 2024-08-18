@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { View, SafeAreaView } from 'react-native';
+
 import { useAppReady } from '@/hooks/useAppReady';
-import { useVideoState } from '@/hooks/useVideoState';
+import { useVideoState } from '@/app/(videoPlayer)/videoPlayer/useVideoState';
 import UploadVideo from '../(uploadVideo)/UploadVideo';
 import SplashScreen from '../(Splash)/SplashScreen';
 

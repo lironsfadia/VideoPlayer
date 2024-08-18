@@ -1,3 +1,26 @@
+export interface VideoRef {
+  current: {
+    seek: (time: number) => void;
+    pause: () => void;
+  } | null;
+}
+
+export interface ScrubParams {
+  time: number;
+  videoRef: VideoRef;
+}
+
+export interface VideoActions {
+  isInTrimProgress: boolean;
+  handleSave: () => void;
+  handleScrub: (params: ScrubParams) => void;
+  handleTrim: (
+    startTime: string | number,
+    endTime: string | number,
+    source: { uri: string },
+    videoRef: VideoRef
+  ) => Promise<void>;
+}
 export interface ThumbnailProps {
   uri: string;
   time: number;
@@ -32,12 +55,19 @@ export interface ControlPanelProps {
   onPlayPause: () => void;
   onAddTextOverlay: () => void;
   onTrimPress: () => void;
-  onSavePress: () => void;
+  onSavePress: (...args: any[]) => void;
+  textOverlays: TextOverlay[];
 }
 
+export interface TextOverlay {
+  id: number;
+  time: number;
+  text: string;
+  position: { x: number; y: number };
+}
 export interface OverlayManagerProps {
   videoId: string;
-  textOverlays: any[];
+  textOverlays: TextOverlay[];
   currentTime: number;
   isAddingText: boolean;
   onAddNewText: () => void;
@@ -48,4 +78,9 @@ export interface OverlayManagerProps {
     position: { x: number; y: number }
   ) => void;
   onDeleteOverlay: (id: number) => void;
+}
+
+export interface useVideoActionsProps {
+  videoId: string;
+  textOverlays: TextOverlay[];
 }

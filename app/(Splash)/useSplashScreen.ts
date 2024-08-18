@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -7,11 +7,20 @@ import {
   withDelay,
   cancelAnimation,
 } from 'react-native-reanimated';
+
 import { ITEM_HEIGHT } from './consts';
 import { getScreenDimensions } from '@/core/utils';
 
 const useSplashScreen = () => {
-  const words = ['Video Player', 'Add Overlay Texts', 'Upload Videos', 'Seek', 'Trim', 'See Thumbnails', 'Watch Videos',];
+  const words = [
+    'Video Player',
+    'Add Overlay Texts',
+    'Upload Videos',
+    'Seek',
+    'Trim',
+    'See Thumbnails',
+    'Watch Videos',
+  ];
   const scrollY = useSharedValue(0);
   const { width, height } = getScreenDimensions();
 

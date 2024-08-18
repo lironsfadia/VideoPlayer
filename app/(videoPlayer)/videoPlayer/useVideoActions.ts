@@ -2,12 +2,22 @@ import { useState } from 'react';
 import { FFmpegKit, ReturnCode } from 'ffmpeg-kit-react-native';
 import RNFS from 'react-native-fs';
 import { VideoRef } from 'react-native-video';
-import { VideoActions, ScrubParams } from './types';
-import { generateUniqueFileName } from './helpers/helpers';
 import { router } from 'expo-router';
 
-export function useVideoActions(): VideoActions {
+import { generateUniqueFileName } from './helpers/helpers';
+import { saveOverlays } from '@/core/utils';
+import { useVideoActionsProps } from '@/app/(videoPlayer)/videoPlayer/types';
+import { VideoActions, ScrubParams } from './types';
+
+export function useVideoActions({
+  videoId,
+  textOverlays,
+}: useVideoActionsProps): VideoActions {
   const [isInTrimProgress, setIsInTrimProgress] = useState<boolean>(false);
+  const [trimmedVideoPath, setTrimmedVideoPath] = useState<string | null>(null);
+  const [tempTrimmedVideoPath, setTempTrimmedVideoPath] = useState<
+    string | null
+  >(null);
 
   const handleScrub = ({ time, videoRef }: ScrubParams): void => {
     if (videoRef.current) {
@@ -50,7 +60,6 @@ export function useVideoActions(): VideoActions {
 
       const duration = endSeconds - startSeconds;
 
-      // Construct FFmpeg command
       const command = `-ss ${startSeconds} -i "${source.uri}" -t ${duration} -c copy "${tempOutputPath}"`;
 
       console.log('Executing FFmpeg command:', command);
@@ -63,21 +72,8 @@ export function useVideoActions(): VideoActions {
       if (ReturnCode.isSuccess(returnCode)) {
         console.log('Video trimmed successfully');
 
-        // Move the file from temp directory to documents directory
-        await RNFS.moveFile(tempOutputPath, finalOutputPath);
-        console.log('Trimmed video saved to:', finalOutputPath);
-
-        // Share the file
-        const options = {
-          type: 'video/mp4',
-          url: `file://${finalOutputPath}`,
-          saveToFiles: true,
-        };
-
-        router.replace({
-          pathname: '/VideoPlayerPage',
-          params: { videoData: JSON.stringify({ uri: finalOutputPath }) },
-        });
+        setTempTrimmedVideoPath(tempOutputPath);
+        setTrimmedVideoPath(finalOutputPath);
       } else {
         console.error('Error trimming video. Return code:', returnCode);
         const logs = await session.getLogs();
@@ -92,10 +88,22 @@ export function useVideoActions(): VideoActions {
     }
   };
 
-  const handleSave = (): void => {
-    // Logic to save edited video
-    console.log('Saving video');
-    // Implementation needed
+  const handleSave = async (): Promise<void> => {
+    console.log('Saving video effects...', videoId, textOverlays);
+    if (videoId && textOverlays.length > 0) {
+      saveOverlays(videoId, textOverlays);
+    }
+
+    if (trimmedVideoPath && tempTrimmedVideoPath) {
+      // Move the file from temp directory to documents directory
+      await RNFS.moveFile(tempTrimmedVideoPath, trimmedVideoPath);
+      console.log('Trimmed video saved to:', trimmedVideoPath);
+
+      router.replace({
+        pathname: '/VideoPlayerPage',
+        params: { videoData: JSON.stringify({ uri: trimmedVideoPath }) },
+      });
+    }
   };
 
   return {

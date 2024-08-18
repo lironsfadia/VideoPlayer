@@ -5,8 +5,12 @@ export const getScreenDimensions = (): { width: number; height: number } => {
 };
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TextOverlay } from '@/app/(videoPlayer)/videoPlayer/types';
 
-export const saveOverlays = async (videoId, overlays) => {
+export const saveOverlays = async (
+  videoId: string,
+  overlays: TextOverlay[]
+) => {
   try {
     const key = `overlays_${videoId}`;
     await AsyncStorage.setItem(key, JSON.stringify(overlays));
@@ -16,7 +20,7 @@ export const saveOverlays = async (videoId, overlays) => {
   }
 };
 
-export const loadOverlays = async (videoId) => {
+export const loadOverlays = async (videoId: string) => {
   try {
     const key = `overlays_${videoId}`;
     console.log('Loading overlays:', key);

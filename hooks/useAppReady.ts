@@ -6,9 +6,7 @@ export function useAppReady() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Perform any pre-loading operations here
-        await new Promise(resolve => setTimeout(resolve, 20000)); // Simulating some async operation for 20 seconds
-      } catch (e) {
+        await new Promise((resolve) => setTimeout(resolve, 20000));
         console.warn(e);
       } finally {
         setAppIsReady(true);

@@ -10,7 +10,6 @@ export const useTimeline = ({
   onScrub,
   videoRef,
   onFrameUpdate,
-  generateThumbnail,
 }: TimelineHookProps): TimelineHookReturn => {
   const [isDragging, setIsDragging] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');

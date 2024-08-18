@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
-import Thumbnail from '../thumbnail/Thumbnail';
 import { MaterialIcons } from '@expo/vector-icons';
+
+import Thumbnail from '../thumbnail/Thumbnail';
 import { TimelineProps } from './types';
 import { useTimeline } from './useTimeline';
 import { PLAY_BUTTON_SIZE, SCRUBBER_SIZE } from './constants';

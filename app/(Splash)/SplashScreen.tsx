@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { ITEM_HEIGHT, SPLASH_TITLE } from './consts';
+
 import Snow from '@/components/ui/Snow';
 import useSplashScreen from './useSplashScreen';
+
+import { ITEM_HEIGHT, SPLASH_TITLE } from './consts';
 
 const SplashScreen = () => {
   const { animatedStyle, words } = useSplashScreen();

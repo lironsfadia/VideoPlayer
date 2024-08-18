@@ -1,32 +1,31 @@
-import { View, Text, Dimensions } from 'react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getScreenDimensions } from '@/core/utils';
-import { useVideoActions } from '@/hooks/useVideoActions';
+import { Dimensions } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createThumbnail } from 'react-native-create-thumbnail';
 import { VideoRef } from 'react-native-video';
 
+import { getScreenDimensions } from '@/core/utils';
+import { useVideoActions } from './useVideoActions';
+import { TextOverlay } from './types';
+
 export default function useVideoPlayer(source) {
   const videoRef = useRef<VideoRef>(null);
-  const { handleScrub, handleTrim, handleSave, isInTrimProgress } =
-    useVideoActions();
-  const { width, height } = getScreenDimensions();
   const [isTrimModalVisible, setIsTrimModalVisible] = useState(false);
-
   const [currentTime, setCurrentTime] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [thumbnailUri, setThumbnailUri] = useState('');
-
   const [videoDimensions, setVideoDimensions] = useState({
     width: 0,
     height: 0,
   });
+  const { width, height } = getScreenDimensions();
   const [screenDimensions, setScreenDimensions] = useState({ width, height });
   const [duration, setDuration] = useState(0);
   const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([]);
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(0);
   const [isAddingText, setIsAddingText] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const { handleScrub, handleTrim, handleSave, isInTrimProgress } =
+    useVideoActions({ videoId: source.uri, textOverlays: textOverlays });
 
   const handlePlayPause = useCallback(() => {
     if (isPlaying) {
@@ -37,10 +36,6 @@ export default function useVideoPlayer(source) {
     setIsPlaying(!isPlaying);
   }, [isPlaying]);
 
-  const onTrim = async (start: number, end: number) => {
-    await handleTrim(start, end, source, videoRef);
-  };
-
   useEffect(() => {
     console.log('VideoPlayer mounted');
     const updateDimensions = () => {
@@ -50,8 +45,13 @@ export default function useVideoPlayer(source) {
     Dimensions.addEventListener('change', updateDimensions);
     return () => {
       console.log('VideoPlayer unmounted');
+      videoRef.current?.pause();
     };
   }, []);
+
+  const onTrim = async (start: number, end: number) => {
+    await handleTrim(start, end, source, videoRef);
+  };
 
   const onProgress = (data) => {
     setCurrentTime(data.currentTime);
@@ -67,14 +67,16 @@ export default function useVideoPlayer(source) {
     console.error('Video error:', e.error);
   }
 
-  async function onLoad(data) {
+  async function onLoad(
+    data: Readonly<{ duration: number; width: number; height: number }>
+  ): Promise<void> {
     setDuration(data.duration);
     setVideoLoaded(true);
     setVideoDimensions({ width: data.width, height: data.height });
     setIsPlaying(true);
   }
 
-  const generateThumbnail = async (time) => {
+  const generateThumbnail = async (time: number) => {
     console.log('Generating thumbnail at time:', time);
     if (source.uri) {
       try {
@@ -92,7 +94,7 @@ export default function useVideoPlayer(source) {
     }
   };
 
-  const handleFrameUpdate = async (time) => {
+  const handleFrameUpdate = async (time: number) => {
     if (videoRef.current) {
       videoRef.current.seek(time);
       generateThumbnail(time);
@@ -105,7 +107,7 @@ export default function useVideoPlayer(source) {
         setCurrentTime(time);
         videoRef.current?.resume();
         setIsPlaying(true);
-      }, 8000);
+      }, 2000);
     }
   };
 

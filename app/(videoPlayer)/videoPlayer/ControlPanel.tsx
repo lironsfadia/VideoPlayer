@@ -46,7 +46,7 @@ const ControlPanel = ({
         iconName={'content-cut'}
       />
       <ActionButton
-        title="Upload"
+        title="Save Effects"
         handlePress={onSavePress}
         iconName={'save'}
       />

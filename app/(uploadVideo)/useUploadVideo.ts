@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Dimensions } from 'react-native';
 import DocumentPicker, {
   DocumentPickerResponse,
 } from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+
 import { useUploadVideoProps, VideoProps } from './types';
-import Video from 'react-native-video';
 
 const useUploadVideo = ({ onFinishUpload }: useUploadVideoProps) => {
   const [video, setVideo] = useState<VideoProps | null>(null);
@@ -29,7 +28,6 @@ const useUploadVideo = ({ onFinishUpload }: useUploadVideoProps) => {
       }
       onFinishUpload({ uri: destPath });
 
-      // Clear the selected video
       setVideo(null);
     } catch (error) {
       console.error('Error saving video:', error);

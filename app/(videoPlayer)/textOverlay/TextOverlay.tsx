@@ -6,20 +6,9 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native';
-import { Text } from '@/components/ui/text';
 
-interface TextOverlayProps {
-  id: number;
-  initialText: string;
-  initialPosition: { x: number; y: number };
-  onUpdate: (
-    id: number,
-    text: string,
-    time: number,
-    position: { x: number; y: number }
-  ) => void;
-  onDelete: (id: number) => void;
-}
+import { Text } from '@/components/ui/text';
+import { TextOverlayProps } from './types';
 
 const TextOverlay = ({
   id,

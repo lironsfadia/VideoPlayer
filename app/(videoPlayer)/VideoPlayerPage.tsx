@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
+
 import { Text } from '@/components/ui/text';
 import CustomHeader from '@/components/ui/CustomHeader';
+
 import VideoPlayer from './videoPlayer/VideoPlayer';
 
 export default function VideoPlayerPage() {
   const { videoData } = useLocalSearchParams();
-
   let parsedVideoData;
   try {
     parsedVideoData = JSON.parse(
