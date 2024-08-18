@@ -141,7 +141,7 @@ To set up this Expo project:
 
    ```
    npx expo prebuild
-   npx expo run -c
+   npx expo start -c
    npx expo run:ios --device
    ```
 
