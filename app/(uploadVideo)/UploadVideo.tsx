@@ -16,8 +16,7 @@ const UploadVideo = ({ onFinishUpload }: UploadVideoProps) => {
 
   return (
     <View className="bg-blue-500 p-5">
-      <Snow />
-      <VStack className="w-4/5 items-center">
+      <VStack className="w-4/9 items-center">
         <Text className="text-4xl font-bold text-fuchsia-500 mb-8">
           {UPLOAD_BUTTON_TITLE}
         </Text>

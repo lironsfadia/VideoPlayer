@@ -1,93 +1,123 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
+  Modal,
   View,
   TextInput,
-  StyleSheet,
+  Text,
   TouchableOpacity,
-  Animated,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
-
-import { Text } from '@/app/components/ui/text';
-import { AddTextOverlayProps } from './types';
 import useAddTextOverlay from './useAddTextOverlay';
+import { AddTextOverlayProps } from './types';
 
-const AddTextOverlay = ({ onAdd, onCancel }: AddTextOverlayProps) => {
+const AddTextOverlay: React.FC<AddTextOverlayProps> = ({ onCancel, onAdd }) => {
   const { text, inputRef, glowStyle, handleAdd, handleTextChange } =
-    useAddTextOverlay({ onAdd, onCancel });
+    useAddTextOverlay({ onCancel, onAdd });
+
+  const handleClosePress = useCallback(
+    (event) => {
+      event.stopPropagation();
+      onCancel();
+    },
+    [onCancel]
+  );
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.inputContainer, glowStyle]}>
-        <TextInput
-          ref={inputRef}
-          style={styles.input}
-          value={text}
-          onChangeText={handleTextChange}
-          placeholder="Enter rad text"
-          placeholderTextColor="rgba(255,255,255,0.5)"
-          autoFocus
-          onSubmitEditing={handleAdd}
-        />
-        <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-      </Animated.View>
-    </View>
+    <Modal
+      transparent={true}
+      visible={true}
+      onRequestClose={handleClosePress}
+      animationType="fade"
+      supportedOrientations={['portrait', 'landscape']}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                value={text}
+                onChangeText={handleTextChange}
+                placeholder="Enter text"
+                placeholderTextColor="rgba(0,0,128,0.5)"
+                returnKeyType="done"
+                onSubmitEditing={handleAdd}
+                autoFocus={false}
+              />
+            </View>
+            <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={handleClosePress}
+            >
+              <Text style={styles.closeButtonText}>×</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingTop: 50,
+  },
+  modalContent: {
+    flexDirection: 'row',
+    backgroundColor: '#000080',
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#00FFFF',
+    padding: 10,
+    alignItems: 'center',
   },
   inputContainer: {
-    width: '80%',
-    backgroundColor: '#000080', // Deep blue background
-    borderRadius: 10,
-    padding: 20,
-    borderWidth: 3,
-    borderColor: '#FF00FF', // Neon pink border
-    shadowColor: '#00FFFF', // Cyan glow
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 10,
-    elevation: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: 'bold',
-    borderBottomWidth: 2,
-    borderBottomColor: '#FF00FF', // Neon pink underline
-    marginBottom: 20,
-    textShadowColor: '#FF00FF',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 8,
+    width: 200,
+    color: '#000080',
+    textAlign: 'center',
   },
   addButton: {
-    backgroundColor: '#00FFFF', // Cyan background
-    padding: 12,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
+    backgroundColor: '#00FFFF',
+    borderRadius: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginLeft: 10,
   },
-  cancelButton: {
-    backgroundColor: '#FF00FF', // Neon pink background
-    padding: 12,
-    borderRadius: 5,
-    alignItems: 'center',
+  addButtonText: {
+    color: '#000080',
+    fontWeight: 'bold',
   },
-  buttonText: {
-    color: '#000080', // Deep blue text
+  closeButton: {
+    position: 'absolute',
+    top: -10,
+    right: -10,
+    backgroundColor: '#FF00FF',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 2,
   },
 });
 

@@ -6,8 +6,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
@@ -29,18 +27,10 @@ const TrimInputModal: React.FC<TrimInputModalProps> = ({
     setStartTime,
     endTime,
     setEndTime,
-    startTimeError,
-    endTimeError,
     endTimeInputRef,
-    dimensions,
-    isPortrait,
     handleTrim,
     handleStartTimeSubmit,
   } = useTrimInputLogic({ duration, onClose, onTrim });
-
-  const handleDonePress = (): void => {
-    Keyboard.dismiss();
-  };
 
   return (
     <Modal
@@ -52,68 +42,36 @@ const TrimInputModal: React.FC<TrimInputModalProps> = ({
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.modalOverlay}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={[styles.modalContainer, { width: dimensions.width }]}
-          >
-            <View
-              style={[
-                styles.modalContent,
-                {
-                  width: isPortrait
-                    ? dimensions.width * 0.8
-                    : dimensions.width * 0.5,
-                  maxWidth: isPortrait ? 300 : 500,
-                },
-              ]}
-            >
-              <Text style={styles.title}>Trim Video</Text>
-              <Text style={styles.label}>Start Time (seconds):</Text>
+          <View style={styles.modalContent}>
+            <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
                 value={startTime}
                 onChangeText={setStartTime}
                 keyboardType="numeric"
-                placeholder="0.00"
+                placeholder="Start"
                 returnKeyType="next"
                 onSubmitEditing={handleStartTimeSubmit}
               />
-              {startTimeError ? (
-                <Text style={styles.errorText}>{startTimeError}</Text>
-              ) : null}
-              <Text style={styles.label}>End Time (seconds):</Text>
+              <Text style={styles.separator}>-</Text>
               <TextInput
                 ref={endTimeInputRef}
                 style={styles.input}
                 value={endTime}
                 onChangeText={setEndTime}
                 keyboardType="numeric"
-                placeholder={duration.toFixed(2)}
+                placeholder="End"
                 returnKeyType="done"
-                onSubmitEditing={handleDonePress}
+                onSubmitEditing={Keyboard.dismiss}
               />
-              {endTimeError ? (
-                <Text style={styles.errorText}>{endTimeError}</Text>
-              ) : null}
-              <TouchableOpacity
-                style={styles.doneButton}
-                onPress={handleDonePress}
-              >
-                <Text style={styles.doneButtonText}>Done</Text>
-              </TouchableOpacity>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={handleTrim}>
-                  <Text style={styles.buttonText}>Trim</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.cancelButton]}
-                  onPress={onClose}
-                >
-                  <Text style={styles.buttonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
             </View>
-          </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.trimButton} onPress={handleTrim}>
+              <Text style={styles.trimButtonText}>Trim</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+              <Text style={styles.closeButtonText}>×</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -123,78 +81,62 @@ const TrimInputModal: React.FC<TrimInputModalProps> = ({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-  },
-  modalContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: 50, // Adjust this value to position the modal higher or lower
   },
   modalContent: {
+    flexDirection: 'row',
     backgroundColor: '#000080',
-    padding: 20,
-    borderRadius: 10,
-    minHeight: 300,
+    borderRadius: 25,
     borderWidth: 2,
     borderColor: '#00FFFF',
-    justifyContent: 'space-between',
+    padding: 10,
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 20,
-    textShadowColor: '#FF00FF',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
-  label: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    marginBottom: 5,
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
+    borderRadius: 15,
+    padding: 8,
+    width: 80,
     color: '#000080',
-    width: '100%',
+    textAlign: 'center',
   },
-  doneButton: {
-    alignSelf: 'flex-end',
-    padding: 10,
-    marginBottom: 10,
+  separator: {
+    color: '#FFFFFF',
+    marginHorizontal: 5,
+    fontSize: 18,
   },
-  doneButtonText: {
-    color: '#00FFFF',
+  trimButton: {
+    backgroundColor: '#00FFFF',
+    borderRadius: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginLeft: 10,
+  },
+  trimButtonText: {
+    color: '#000080',
     fontWeight: 'bold',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  button: {
-    backgroundColor: '#00FFFF',
-    padding: 10,
-    borderRadius: 5,
-    width: '45%',
+  closeButton: {
+    position: 'absolute',
+    top: -10,
+    right: -10,
+    backgroundColor: '#FF00FF',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  cancelButton: {
-    backgroundColor: '#FF00FF',
-  },
-  buttonText: {
-    color: '#000080',
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
     fontWeight: 'bold',
-  },
-  errorText: {
-    color: '#FF0000',
-    fontSize: 12,
-    marginBottom: 10,
   },
 });
 

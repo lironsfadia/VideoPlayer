@@ -80,13 +80,13 @@ export function useVideoActions({
   );
 
   const handleSave = useCallback(async (): Promise<void> => {
-    console.log('Saving video effects...', videoId, textOverlays);
-    if (videoId && textOverlays.length > 0) {
-      await saveOverlays(videoId, textOverlays);
-    }
+    try {
+      console.log('Saving video effects...', videoId, textOverlays);
+      if (videoId) {
+        await saveOverlays(videoId, textOverlays);
+      }
 
-    if (trimmedVideoPath && tempTrimmedVideoPath) {
-      try {
+      if (trimmedVideoPath && tempTrimmedVideoPath) {
         await moveFile(tempTrimmedVideoPath, trimmedVideoPath);
         console.log('Trimmed video saved to:', trimmedVideoPath);
 
@@ -94,10 +94,10 @@ export function useVideoActions({
           pathname: '/VideoPlayerPage',
           params: { videoData: JSON.stringify({ uri: trimmedVideoPath }) },
         });
-      } catch (error) {
-        console.error('Error saving trimmed video:', error);
-        throw error;
       }
+    } catch (error) {
+      console.error('Error saving trimmed video:', error);
+      throw error;
     }
   }, [videoId, textOverlays, trimmedVideoPath, tempTrimmedVideoPath]);
 

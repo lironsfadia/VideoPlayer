@@ -41,10 +41,7 @@ const ControlPanel: React.FC<ControlPanelProps> = React.memo(
         onTrimPress={onTrimPress}
         onSavePress={onSavePress}
         disableAddText={isInTrimProgress}
-        disableSave={
-          (!isPendingTrimVersion && textOverlays.length === 0) ||
-          isInTrimProgress
-        }
+        disableSave={!isPendingTrimVersion || isInTrimProgress}
         disableTrim={isInTrimProgress}
       />
     </View>

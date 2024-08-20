@@ -1,1 +1,1 @@
-export const UPLOAD_BUTTON_TITLE = 'Upload Your Rad Video';
+export const UPLOAD_BUTTON_TITLE = 'Upload Your Video';

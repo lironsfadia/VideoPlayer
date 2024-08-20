@@ -30,7 +30,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = React.memo(
         title="Save Effects"
         handlePress={onSavePress}
         iconName={'save'}
-        disabled={disableSave}
+        disabled={false}
       />
     </View>
   )
